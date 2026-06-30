@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TowerBrook Portfolio AI Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #F1F2F5; font-family: system-ui,-apple-system,'Segoe UI',Arial,sans-serif; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:#F1F2F5}
+    ::-webkit-scrollbar-thumb{background:#C8C9C7;border-radius:3px}
+  </style>
+</head>
+<body>
+  <div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;color:#8A8D90;font-size:14px;">Loading dashboard…</div></div>
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const PA_URL = "https://default22bdc63c37444c46b50d7437110db0.d5.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a73dd05e3cd445dda74e2f9f6f1d0112/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=doTs9hpgHB3zQP4ba4XuIqPNVCnc1I_X0rk14D-7JZ4";
+
+    const parseLine = s => {
+      const r = []; let cur = '', q = false;
+      for (let i = 0; i < s.length; i++) {
+        if (s[i] === '"') { if (q && s[i+1] === '"') { cur += '"'; i++; } else q = !q; }
+        else if (s[i] === ',' && !q) { r.push(cur.trim()); cur = ''; }
+        else cur += s[i];
+      }
+      r.push(cur.trim()); return r;
+    };
+
+    const parseCSV = text => {
+      const lines = text.replace(/\r/g, '').split('\n');
+      let start = 0;
+      for (let i = 0; i < Math.min(5, lines.length); i++) {
+        const l = lines[i].toLowerCase();
+        if (l.includes('company') || l.includes('us/europe') || !lines[i].trim()) start = i + 1;
+      }
+      return lines.slice(start).map((line, i) => {
+        if (!line.trim()) return null;
+        const c = parseLine(line);
+        if (!c[2]) return null;
+        return {
+          id: i+1, name: c[2]||null, geo: c[3]||null, fund: c[4]||null,
+          lastBoard: c[5]||null, bpDate: c[6]||null,
+          bp: [c[7],c[8],c[9],c[10],c[11],c[12],c[13]].map(v=>v||null),
+          bpScore: c[14] ? parseInt(c[14]) : null,
+          bbDate: c[16]||null, bb: [c[17],c[18],c[19],c[20]].map(v=>v||null),
+          spend: c[21]||null, roi: c[22]||null, equity: c[23]||null,
+          ddReady: c[24]||null, comms: c[25]||null, vcDate: c[26]||null,
+          rRev: c[27]||null, rCost: c[28]||null,
+          tRev: c[29]||null, tRevD: c[30]||null,
+          tCost: c[31]||null, tCostD: c[32]||null,
+          inv: c[33]||null, note: c[34]||null
+        };
+      }).filter(Boolean);
+    };
+
+    const DATA = [
+      {id:1,name:"AA",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"",bp:["In place","In place","In place","In place","In place","In place","In place"],bpScore:21,bbDate:"",bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"",rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:2,name:"Acacium Group",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:3,name:"Aernnova",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:4,name:"Amylu",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:5,name:"Anthropic",geo:"US",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:6,name:"AQUAchiara",geo:"Europe",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:7,name:"Axil",geo:"Europe",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:8,name:"Azzurri",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:9,name:"BRG",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Partial","Partial","Partial","Partial","Partial","Organised"],bpScore:14,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"Apr 2026",rRev:null,rCost:null,tRev:null,tRevD:null,tCost:"USD 17m",tCostD:null,inv:"USD 10m",note:null},
+      {id:10,name:"Bruneau",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:11,name:"CarTrawler",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Partial","In place","In place","In place","Partial","Partial"],bpScore:18,bbDate:"Apr 2026",bb:["M","H","M","H"],equity:"H",ddReady:null,comms:"Financing - To start",vcDate:"Apr 2026",rRev:null,rCost:null,tRev:"Not disclosed",tRevD:null,tCost:"Not disclosed",tCostD:null,inv:null,note:null},
+      {id:12,name:"CAVU",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:13,name:"CBTS",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"Apr 2026",rRev:null,rCost:null,tRev:"USD 32.5m",tRevD:"FY29",tCost:"USD 7.5m",tCostD:"FY29",inv:null,note:null},
+      {id:14,name:"CoAction",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Partial","In place","In place","In place","Partial","Partial"],bpScore:18,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"Apr 2026",rRev:null,rCost:"USD 365k",tRev:"USD 7.5m",tRevD:"FY28",tCost:"USD 70m",tCostD:"FY31",inv:null,note:null},
+      {id:15,name:"Compassus",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"Mar 2026",bp:["In place","Partial","Partial","In place","In place","Partial","Partial"],bpScore:17,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:"USD 20m",tRevD:"FY28",tCost:"USD 60m",tCostD:"FY28",inv:null,note:null},
+      {id:16,name:"Data Centers SPV",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:17,name:"Demakes",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:18,name:"ECIT",geo:"Europe",fund:"TSO",lastBoard:"TBD",bpDate:null,bp:["In place","Organised","Partial","Partial","Organised","Organised","Organised"],bpScore:11,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Financing - To start",vcDate:"Apr 2026",rRev:null,rCost:null,tRev:"NOK 250m",tRevD:"FY29",tCost:"Not disclosed",tCostD:null,inv:"NOK 262m over 3y",note:"50% cost-to-serve reduction; ~4% EBIT uplift; 10-15% efficiency gains in 36m"},
+      {id:19,name:"EFESO",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Organised","Partial","Organised","Organised","Organised","Organised"],bpScore:10,bbDate:"Apr 2026",bb:[null,null,null,null],equity:null,ddReady:null,comms:"Exit - In progress",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:20,name:"EisnerAmper",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","In place","In place","Partial","Partial","Partial","Partial"],bpScore:17,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"Apr 2026",rRev:"USD 1m",rCost:"USD 7m",tRev:null,tRevD:null,tCost:"USD 24m",tCostD:"FY27",inv:null,note:null},
+      {id:21,name:"Envevo",geo:"Europe",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:22,name:"Epsa",geo:"Europe",fund:"TSO",lastBoard:"TBD",bpDate:"Apr 2026",bp:["Partial","Organised","Organised","Organised","Organised","Organised","Organised"],bpScore:8,bbDate:"Apr 2026",bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:23,name:"Equals",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","In place","In place","In place","In place","In place","Partial"],bpScore:20,bbDate:"Apr 2026",bb:["H","M","M","H"],equity:"H",ddReady:null,comms:"Financing - In progress",vcDate:"Apr 2026",rRev:null,rCost:"~GBP 60k annualised",tRev:"Not disclosed",tRevD:null,tCost:"Not disclosed",tCostD:null,inv:null,note:null},
+      {id:24,name:"FreshPure",geo:"US",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:25,name:"FUZE HEALTH",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:26,name:"GMC",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:27,name:"Gravity Media Group",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:28,name:"GSF",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:29,name:"ID Unlimited",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:30,name:"IDAK",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:31,name:"Ignite Fitness",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:32,name:"Infopro Digital",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Organised","Partial","Partial","Partial","Partial","Partial"],bpScore:14,bbDate:"Apr 2026",bb:["M","H","H","H"],equity:"H",ddReady:null,comms:"Financing - Done",vcDate:"Apr 2026",rRev:null,rCost:null,tRev:"EUR 48m",tRevD:"FY28",tCost:"EUR 7m",tCostD:"FY28",inv:null,note:null},
+      {id:33,name:"IZIPIZI",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:34,name:"J. Jill",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:35,name:"JJA",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:36,name:"JSM",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:37,name:"La Maison Bleue",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:38,name:"Langan",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:39,name:"Law Finance Group",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:40,name:"LiftWerx",geo:"US",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:41,name:"MSA Mizar",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"May 2026",bp:["In place","In place","In place","Organised","In place","Partial","Organised"],bpScore:16,bbDate:"May 2026",bb:["H","M","M","H"],equity:"H",ddReady:null,comms:null,vcDate:"May 2026",rRev:null,rCost:null,tRev:null,tRevD:null,tCost:"USD 1.5m",tCostD:null,inv:null,note:null},
+      {id:42,name:"Newtek",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:43,name:"Pennant Park",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:44,name:"Precede",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:45,name:"Premium Credit",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Partial","Organised","Organised","Organised","Partial","Organised"],bpScore:11,bbDate:"Apr 2026",bb:[null,null,null,null],equity:null,ddReady:null,comms:"Exit - In progress",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:46,name:"PT Solutions",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:47,name:"R1 RCM",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","In place","In place","In place","In place","In place","In place"],bpScore:21,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"May 2025",rRev:null,rCost:null,tRev:"USD 200m",tRevD:"FY28",tCost:"USD 400m",tCostD:"FY28",inv:null,note:null},
+      {id:48,name:"Regent Surgical",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:49,name:"Rewards Network",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:50,name:"RYDGE",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Partial","In place","Organised","Organised","Organised","Organised"],bpScore:12,bbDate:"Apr 2026",bb:[null,null,null,null],equity:null,ddReady:null,comms:"Financing - To start",vcDate:"Apr 2026",rRev:"~EUR 135k",rCost:null,tRev:"EUR 2m ARR",tRevD:"FY26+",tCost:"EUR 1m",tCostD:"FY26",inv:"~EUR 500k",note:null},
+      {id:51,name:"Sabena Technics",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:52,name:"Solis",geo:"US",fund:"PE & Delta",lastBoard:"TBD",bpDate:"May 2026",bp:["Partial","Organised","Organised","Partial","Partial","Organised","Organised"],bpScore:10,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"May 2026",rRev:"USD 2m",rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:"~80 FTEs by 2027+"},
+      {id:53,name:"Stonebridge",geo:"US",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:54,name:"Talan",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"Apr 2026",bp:["In place","Organised","Partial","In place","Organised","Organised","Organised"],bpScore:12,bbDate:"Apr 2026",bb:[null,null,null,null],equity:null,ddReady:null,comms:"Financing - To start",vcDate:"Apr 2026",rRev:null,rCost:null,tRev:"EUR 150m",tRevD:"FY28",tCost:"EUR 15-22m",tCostD:"FY28",inv:null,note:null},
+      {id:55,name:"Team Eiffel",geo:"Europe",fund:"PE",lastBoard:"TBD",bpDate:"May 2026",bp:["In place","In place","Partial","Partial","Partial","Organised","Partial"],bpScore:15,bbDate:"May 2026",bb:["M","M","M","H"],equity:"M",ddReady:null,comms:"Not concerned",vcDate:"May 2026",rRev:"EUR 43.7k",rCost:null,tRev:"EUR 640k",tRevD:"FY26",tCost:null,tCostD:null,inv:null,note:null},
+      {id:56,name:"The Independents",geo:"Europe",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:57,name:"TriMedX",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"May 2026",bp:["In place","In place","In place","Partial","Partial","Partial","Partial"],bpScore:17,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"May 2026",rRev:null,rCost:null,tRev:null,tRevD:null,tCost:"USD 16.6m",tCostD:"FY26",inv:null,note:null},
+      {id:58,name:"TXO",geo:"Europe",fund:"TIO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:59,name:"Uperio",geo:"Europe",fund:"PE",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:"Not concerned",vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:60,name:"USACS",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:61,name:"Validity",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:62,name:"Vatica + Cozeva",geo:"US",fund:"TSO",lastBoard:null,bpDate:null,bp:[null,null,null,null,null,null,null],bpScore:null,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:null,rRev:null,rCost:null,tRev:null,tRevD:null,tCost:null,tCostD:null,inv:null,note:null},
+      {id:63,name:"VytlOne (formerly Maxor)",geo:"US",fund:"PE",lastBoard:"TBD",bpDate:"May 2026",bp:["In place","In place","Partial","In place","In place","Partial","Partial"],bpScore:18,bbDate:null,bb:[null,null,null,null],equity:null,ddReady:null,comms:null,vcDate:"May 2026",rRev:null,rCost:null,tRev:null,tRevD:null,tCost:"USD 4m",tCostD:"FY26",inv:null,note:"~$100m EBITDA opportunity by 2030"},
+    ];
+
+    const TB={navy:"#00216A",navyDeep:"#001A52",navyInk:"#00123A",burgundy:"#612141",burgundyDeep:"#4A1832",darkGray:"#4C4F54",medGray:"#8A8D90",lightGray:"#C8C9C7",blue1:"#667AA6",blue2:"#99A6C3",blue3:"#CCD3E1"};
+    const GREEN={c:"#15643F",bg:"#E2F1EA",bd:"#B4D8C5"};
+    const AMBER={c:"#8A5A12",bg:"#FBF0DA",bd:"#ECCF94"};
+    const BLUEq={c:"#2E4C8C",bg:"#DEE5F2",bd:"#B4C2DF"};
+    const RED={c:"#8A1A30",bg:"#F6DBDF",bd:"#E5A6AE"};
+    const ST={"In place":{w:3,...GREEN,label:"In place"},"Partial":{w:2,...AMBER,label:"Partial"},"Organised":{w:1,...BLUEq,label:"Organised"}};
+    const ST_OPTS=["In place","Partial","Organised"];
+    const CRIT=[["CEO","Sponsorship"],["AI Governance","Entity"],["Resource","Centralised Lab"],["Build / Buy /","Right Partner"],["Quick Iterative","Structure"],["AI Launch &","Diffusion"],["AI Value","Tracking"]];
+    const BB_COLS=[["Market &","Customer"],["Value & Market","Proposition"],["Business &","Financial"],["Internal","Capabilities"]];
+    const HMLm={H:GREEN,M:AMBER,L:RED};
+    const HML_FULL={H:"High",M:"Medium",L:"Low"};
+    const COMMS={"Financing - Done":{c:GREEN.c,bg:GREEN.bg,bd:GREEN.bd},"Financing - In progress":{c:BLUEq.c,bg:BLUEq.bg,bd:BLUEq.bd},"Financing - To start":{c:TB.darkGray,bg:"#ECEEF1",bd:"#DADCE0"},"Exit - In progress":{c:TB.burgundy,bg:"#DFD3D9",bd:"#C0A6B3"},"Not concerned":{c:TB.medGray,bg:"#F0F1F3",bd:"#E2E3E5"}};
+    const FUND_COLORS={"PE":{bg:TB.navy},"TSO":{bg:TB.blue1},"TIO":{bg:TB.blue3,c:TB.navy},"Delta":{bg:TB.burgundy},"PE & Delta":{bg:TB.burgundy}};
+
+    const scoreOf=bp=>bp.reduce((a,v)=>a+(v&&ST[v]?ST[v].w:0),0);
+    const rowScore=c=>{const n=parseInt(c.bpScore);return(!isNaN(n)&&n>=0)?n:scoreOf(c.bp);};
+    const pctOf=s=>Math.round(s/21*100);
+    const hasBP=c=>c.bp.some(Boolean);
+    const hasEQ=c=>c.bb.some(Boolean)||c.ddReady||c.equity||(c.comms&&c.comms!=="Not concerned");
+    const hasVC=c=>[c.rRev,c.rCost,c.tRev,c.tCost,c.inv,c.note,c.spend,c.roi].some(Boolean);
+    const tracked=c=>hasBP(c)||hasEQ(c)||hasVC(c);
+
+    function Pill({v}){if(!v||!ST[v])return<span style={{color:TB.lightGray}}>–</span>;const s=ST[v];return<span style={{fontSize:9.5,fontWeight:600,padding:"3px 7px",borderRadius:4,whiteSpace:"nowrap",display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{s.label}</span>;}
+    function HML({v}){if(!v||!HMLm[v])return<span style={{color:TB.lightGray}}>–</span>;const s=HMLm[v];return<span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:3,display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{v}</span>;}
+    function Comms({v}){if(!v)return<span style={{color:TB.lightGray}}>–</span>;const s=COMMS[v]||{c:TB.darkGray,bg:"#ECEEF1",bd:"#DADCE0"};return<span style={{fontSize:9.5,fontWeight:600,padding:"3px 8px",borderRadius:4,whiteSpace:"nowrap",display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{v}</span>;}
+    function Geo({g}){const us=g==="US";return<span style={{fontSize:9,fontWeight:700,letterSpacing:".06em",borderRadius:3,padding:"1px 5px",lineHeight:1.3,display:"inline-block",border:"1px solid",color:us?"#612141":"#667AA6",borderColor:us?"#C0A6B3":"#CCD3E1"}}>{us?"US":g==="Europe"?"EU":g||"–"}</span>;}
+    function Fund({f}){const fc=FUND_COLORS[f]||{bg:TB.medGray};return<span style={{fontSize:8.5,fontWeight:700,padding:"2px 6px",borderRadius:3,letterSpacing:".03em",whiteSpace:"nowrap",lineHeight:1.3,display:"inline-block",color:fc.c||"#fff",background:fc.bg}}>{f||"–"}</span>;}
+    function Money({v,col}){if(!v)return<span style={{color:TB.lightGray}}>–</span>;if(v==="Not disclosed")return<span style={{fontSize:10,color:TB.medGray,fontStyle:"italic"}}>n/d</span>;return<span style={{fontWeight:600,color:col,fontSize:11}}>{v}</span>;}
+    function ScoreBar({s}){const p=pctOf(s),col=s>=18?GREEN.c:s>=11?AMBER.c:RED.c;return<div style={{display:"flex",alignItems:"center",gap:8,justifyContent:"flex-end"}}><div style={{width:42,height:6,borderRadius:3,background:"#E7E3E6",overflow:"hidden",flexShrink:0}}><div style={{width:`${p}%`,height:"100%",background:col}}/></div><span style={{fontSize:11,fontWeight:700,minWidth:28,textAlign:"right",color:col}}>{s}<span style={{fontSize:9,fontWeight:400,opacity:.7}}>/21</span></span></div>;}
+    function NameCell({c}){return<div style={{display:"flex",flexDirection:"column",gap:3,textAlign:"left"}}><span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span><span style={{display:"flex",alignItems:"center",gap:5}}><Fund f={c.fund}/><Geo g={c.geo}/></span></div>;}
+
+    function DonutSVG({g,a,r}){const n=g+a+r||1,C=2*Math.PI*40;const seg=(v,off)=>`stroke-dasharray="${C*v/n} ${C-C*v/n}" stroke-dashoffset="${off}"`;const gO=C*.25,aO=C*.25-C*g/n,rO=C*.25-C*(g+a)/n;return<svg width="84" height="84" viewBox="0 0 90 90" dangerouslySetInnerHTML={{__html:`<circle cx="45" cy="45" r="40" fill="none" stroke="#ECEDF0" stroke-width="8"/>${g>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${GREEN.c}" stroke-width="8" ${seg(g,gO)}/>`:""}${a>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${AMBER.c}" stroke-width="8" ${seg(a,aO)}/>`:""}${r>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${RED.c}" stroke-width="8" ${seg(r,rO)}/>`:""}  <text x="45" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="${TB.navy}" font-family="system-ui,sans-serif">${n}</text><text x="45" y="60" text-anchor="middle" font-size="7.5" fill="${TB.medGray}" font-family="system-ui,sans-serif" letter-spacing=".08em">SCORED</text>`}}/>;}
+    function MixBar({parts}){const tot=parts.reduce((a,p)=>a+p.v,0)||1;return<div><div style={{display:"flex",height:9,borderRadius:5,overflow:"hidden",background:"#ECEDF0"}}>{parts.filter(p=>p.v>0).map(p=><div key={p.label} title={`${p.label}: ${p.v}`} style={{width:`${p.v/tot*100}%`,background:p.c}}/>)}</div><div style={{display:"flex",flexWrap:"wrap",gap:"4px 14px",marginTop:9}}>{parts.map(p=><span key={p.label} style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:TB.darkGray}}><span style={{width:8,height:8,borderRadius:2,display:"inline-block",background:p.c}}/>{p.label} <b style={{color:TB.navy}}>{p.v}</b></span>)}</div></div>;}
+
+    function Summary({rows}){
+      const scored=rows.filter(hasBP),scores=scored.map(rowScore);
+      const avg=scores.length?(scores.reduce((a,b)=>a+b,0)/scores.length).toFixed(1):"–";
+      const g=scores.filter(s=>s>=18).length,a=scores.filter(s=>s>=11&&s<18).length,r=scores.filter(s=>s<11).length;
+      const tr=rows.filter(tracked);
+      const nBP=rows.filter(hasBP).length,nEQ=rows.filter(hasEQ).length,nVC=rows.filter(hasVC).length;
+      const geoMix=[{label:"Europe",v:tr.filter(c=>c.geo==="Europe").length,c:TB.navy},{label:"US",v:tr.filter(c=>c.geo==="US").length,c:TB.burgundy}];
+      const fundMix=[{label:"PE",v:tr.filter(c=>/PE/.test(c.fund||"")).length,c:TB.navy},{label:"TSO",v:tr.filter(c=>c.fund==="TSO").length,c:TB.blue1},{label:"TIO",v:tr.filter(c=>c.fund==="TIO").length,c:TB.blue2},{label:"Delta",v:tr.filter(c=>/Delta/.test(c.fund||"")).length,c:TB.burgundy}];
+      const card={background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,padding:"18px 22px",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)"};
+      const label={fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".12em",marginBottom:12};
+      return<div style={{display:"grid",gridTemplateColumns:"1.05fr 1.25fr 1.4fr",gap:16,marginBottom:18}}>
+        <div style={{...card,borderTop:`3px solid ${TB.navy}`}}>
+          <div style={label}>Portfolio coverage</div>
+          <div style={{display:"flex",alignItems:"baseline",gap:8}}><span style={{fontSize:42,fontWeight:700,color:TB.navy,lineHeight:1}}>{tr.length}</span><span style={{fontSize:14,color:TB.medGray}}>/ {rows.length} companies</span></div>
+          <div style={{fontSize:11.5,color:TB.medGray,marginTop:4}}>actively engaged on AI</div>
+          <div style={{display:"flex",gap:22,marginTop:16,paddingTop:14,borderTop:"1px solid #EEEFF2"}}>
+            {[["Blueprint",nBP],["Building Blocks",nEQ],["Value creation",nVC]].map(([k,v])=><div key={k}><div style={{fontSize:19,fontWeight:700,color:TB.navy,lineHeight:1}}>{v}</div><div style={{fontSize:10,color:TB.medGray,marginTop:3}}>{k}</div></div>)}
+          </div>
+        </div>
+        <div style={{...card,borderTop:`3px solid ${TB.navy}`}}>
+          <div style={label}>Blueprint maturity</div>
+          <div style={{display:"flex",alignItems:"center",gap:20}}>
+            <DonutSVG g={g} a={a} r={r}/>
+            <div style={{flex:1}}>
+              <div style={{display:"flex",alignItems:"baseline",gap:6,marginBottom:11}}><span style={{fontSize:32,fontWeight:700,color:TB.navy,lineHeight:1}}>{avg}</span><span style={{fontSize:12,color:TB.medGray}}>/21 average</span></div>
+              {[[g,GREEN.c,"Green","18–21"],[a,AMBER.c,"Amber","11–17"],[r,RED.c,"Red","0–10"]].map(([cnt,col,nm,rng])=><div key={nm} style={{display:"flex",alignItems:"center",marginBottom:7}}><span style={{width:9,height:9,borderRadius:"50%",background:col,display:"inline-block",marginRight:6,flexShrink:0}}/><span style={{fontSize:11.5,color:TB.darkGray}}><b style={{color:TB.navy}}>{cnt}</b> {nm} <span style={{color:TB.medGray,fontSize:10}}>({rng})</span></span></div>)}
+            </div>
+          </div>
+        </div>
+        <div style={{...card,borderTop:`3px solid ${TB.burgundy}`}}>
+          <div style={label}>Engaged portfolio mix</div>
+          <div style={{fontSize:10,fontWeight:600,color:TB.medGray,marginBottom:7}}>By geography</div><MixBar parts={geoMix}/>
+          <div style={{fontSize:10,fontWeight:600,color:TB.medGray,margin:"16px 0 7px"}}>By fund</div><MixBar parts={fundMix}/>
+        </div>
+      </div>;
+    }
+
+    const thS=(bg)=>({fontSize:9,color:"#fff",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",padding:"9px 8px",textAlign:"center",verticalAlign:"middle",whiteSpace:"pre-line",lineHeight:1.35,height:44,background:bg});
+    const tdS={fontSize:11,fontWeight:500,padding:"9px 8px",borderTop:"1px solid #EEEFF2",color:TB.darkGray,textAlign:"center",verticalAlign:"middle"};
+
+    function BlueprintTab({rows}){
+      const t=rows.filter(hasBP).sort((a,b)=>a.name.localeCompare(b.name));
+      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+      return<div>
+        <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
+          <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Blueprint status</span>
+          {ST_OPTS.map(k=>{const s=ST[k];return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({s.w})</span></span>;})}
+        </div>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1100}}>
+          <colgroup><col style={{width:168}}/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/></colgroup>
+          <thead><tr>
+            <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
+            <th rowSpan={2} style={thS(TB.navy)}>Last Board{"\n"}Presentation</th>
+            <th rowSpan={2} style={thS(TB.navy)}>Updated</th>
+            <th colSpan={7} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Blueprint</th>
+            <th rowSpan={2} style={thS(TB.navy)}>Blueprint{"\n"}Score (/21)</th>
+          </tr><tr>{CRIT.map((c,i)=><th key={i} style={thS(TB.navy)}>{c[0]}{"\n"}{c[1]}</th>)}</tr></thead>
+          <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";const lbS=c.lastBoard==="TBD"?{fontSize:10.5,fontWeight:600,color:"#8A5A12"}:{fontSize:10.5,fontWeight:500,color:TB.darkGray};return<tr key={c.id} style={{background:z}}>
+            <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
+            <td style={tdS}><span style={lbS}>{c.lastBoard||"–"}</span></td>
+            <td style={tdS}><span style={{fontSize:10.5,color:TB.darkGray}}>{c.bpDate||"–"}</span></td>
+            {c.bp.map((v,i)=><td key={i} style={{...tdS,padding:"6px 4px"}}><Pill v={v}/></td>)}
+            <td style={tdS}><ScoreBar s={rowScore(c)}/></td>
+          </tr>;})}
+          </tbody>
+        </table></div>
+      </div>;
+    }
+
+    function BlocksTab({rows}){
+      const t=rows.filter(c=>hasEQ(c)||hasBP(c)).sort((a,b)=>a.name.localeCompare(b.name));
+      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+      return<div>
+        <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
+          <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Readiness</span>
+          {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
+        </div>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1020}}>
+          <colgroup><col style={{width:168}}/><col style={{width:96}}/><col style={{width:74}}/>{BB_COLS.map((_,i)=><col key={i} style={{width:88}}/>)}<col style={{width:72}}/><col style={{width:144}}/><col style={{width:80}}/></colgroup>
+          <thead><tr>
+            <th rowSpan={2} style={{...thS(TB.burgundy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>Last Board{"\n"}Presentation</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>Updated</th>
+            <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>AI Equity{"\n"}Story</th>
+          </tr><tr>{BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}</th>)}</tr></thead>
+          <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";const lbS=c.lastBoard==="TBD"?{fontSize:10.5,fontWeight:600,color:"#8A5A12"}:{fontSize:10.5,fontWeight:500,color:TB.darkGray};return<tr key={c.id} style={{background:z}}>
+            <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
+            <td style={tdS}><span style={lbS}>{c.lastBoard||"–"}</span></td>
+            <td style={tdS}><span style={{fontSize:10.5,color:TB.darkGray}}>{c.bbDate||c.bpDate||"–"}</span></td>
+            {c.bb.map((v,i)=><td key={i} style={{...tdS,padding:"6px 4px"}}><HML v={v}/></td>)}
+            <td style={tdS}><HML v={c.ddReady}/></td>
+            <td style={tdS}><Comms v={c.comms}/></td>
+            <td style={tdS}><HML v={c.equity}/></td>
+          </tr>;})}
+          </tbody>
+        </table></div>
+      </div>;
+    }
+
+    function ValueTab({rows}){
+      const t=rows.filter(hasVC).sort((a,b)=>a.name.localeCompare(b.name));
+      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+      return<div>
+        <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
+          {[[GREEN.c,"Realized"],[TB.navy,"Targets"],[TB.burgundy,"Economics"]].map(([col,lbl])=><span key={lbl} style={{display:"flex",alignItems:"center",gap:6}}><span style={{width:9,height:9,borderRadius:2,background:col,display:"inline-block"}}/>{lbl}</span>)}
+          <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
+        </div>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1300}}>
+          <colgroup><col style={{width:168}}/><col style={{width:88}}/><col style={{width:64}}/><col style={{width:104}}/><col style={{width:116}}/><col style={{width:96}}/><col style={{width:56}}/><col style={{width:104}}/><col style={{width:56}}/><col style={{width:128}}/><col style={{width:240}}/><col style={{width:70}}/></colgroup>
+          <thead><tr>
+            <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
+            <th colSpan={2} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Economics</th>
+            <th colSpan={2} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Realized to date</th>
+            <th colSpan={4} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Targets</th>
+            <th rowSpan={2} style={thS(TB.navy)}>AI{"\n"}Investment</th>
+            <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left"}}>Comment / Note</th>
+            <th rowSpan={2} style={thS(TB.navy)}>Updated</th>
+          </tr><tr>
+            <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th><th style={thS(TB.burgundy)}>ROI</th>
+            <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th><th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Revenue</th><th style={thS(TB.navy)}>Date</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Cost Savings</th><th style={thS(TB.navy)}>Date</th>
+          </tr></thead>
+          <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";return<tr key={c.id} style={{background:z}}>
+            <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
+            <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><Money v={c.spend} col={TB.burgundy}/></td>
+            <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><Money v={c.roi} col={TB.burgundy}/></td>
+            <td style={tdS}><Money v={c.rRev} col={GREEN.c}/></td>
+            <td style={tdS}><Money v={c.rCost} col={GREEN.c}/></td>
+            <td style={tdS}><Money v={c.tRev} col={TB.navy}/></td>
+            <td style={tdS}><span style={{fontSize:10,color:c.tRevD?TB.navy:TB.lightGray,fontWeight:500}}>{c.tRevD||"–"}</span></td>
+            <td style={tdS}><Money v={c.tCost} col={TB.navy}/></td>
+            <td style={tdS}><span style={{fontSize:10,color:c.tCostD?TB.navy:TB.lightGray,fontWeight:500}}>{c.tCostD||"–"}</span></td>
+            <td style={tdS}>{c.inv?<span style={{fontWeight:600,color:TB.burgundy,fontSize:10.5}}>{c.inv}</span>:<span style={{color:TB.lightGray}}>–</span>}</td>
+            <td style={{...tdS,textAlign:"left"}}>{c.note?<span style={{fontSize:10,color:TB.darkGray,lineHeight:1.4}}>{c.note}</span>:<span style={{color:TB.lightGray}}>–</span>}</td>
+            <td style={tdS}><span style={{fontSize:10,color:TB.darkGray}}>{c.vcDate||"–"}</span></td>
+          </tr>;})}
+          </tbody>
+        </table></div>
+      </div>;
+    }
+
+    function Dashboard() {
+      const [page, setPage] = useState("value");
+      const [geo, setGeo] = useState("All");
+      const [fund, setFund] = useState("All");
+      const [q, setQ] = useState("");
+      const [showNA, setShowNA] = useState(false);
+      const [liveData, setLiveData] = useState(null);
+      const [lastUpdated, setLastUpdated] = useState(null);
+      const [fetching, setFetching] = useState(false);
+      const [refreshTick, setRefreshTick] = useState(0);
+
+      useEffect(() => {
+        const load = async () => {
+          setFetching(true);
+          try {
+            const r = await fetch(PA_URL, {method:"POST", mode:"cors"});
+            if (!r.ok) throw new Error(r.status);
+            let text = await r.text();
+            if (text && !/[\n,]/.test(text.slice(0,80)) && /^[A-Za-z0-9+/=]{20,}$/.test(text.replace(/\s/,''))) {
+              try { text = atob(text); } catch(e) {}
+            }
+            const parsed = parseCSV(text);
+            if (parsed.length >= 5) { setLiveData(parsed); setLastUpdated(new Date()); }
+          } catch(e) { console.warn("Dashboard fetch error:", e.message); }
+          setFetching(false);
+        };
+        load();
+        const id = setInterval(load, 120000);
+        return () => clearInterval(id);
+      }, [refreshTick]);
+
+      const activeData = liveData || DATA;
+      const filtered = activeData.filter(c => {
+        if(geo!=="All"&&c.geo!==geo)return false;
+        if(fund!=="All"){
+          if(fund==="Delta"){if(!/Delta/.test(c.fund||""))return false;}
+          else if(fund==="PE"){if(!/PE/.test(c.fund||""))return false;}
+          else if(c.fund!==fund)return false;
+        }
+        if(q&&!c.name.toLowerCase().includes(q.toLowerCase()))return false;
+        return true;
+      });
+
+      const na=filtered.filter(c=>!tracked(c)).sort((a,b)=>a.name.localeCompare(b.name));
+      const tabs=[{k:"value",label:"Quantified Value Creation"},{k:"blueprint",label:"AI Blueprint"},{k:"blocks",label:"AI Exit Readiness"}];
+      const geos=["All","Europe","US"],funds=["All","PE","TSO","TIO","Delta"];
+      const nbtn=(active)=>({background:active?"rgba(255,255,255,.16)":"transparent",border:`1px solid ${active?"rgba(255,255,255,.5)":"rgba(255,255,255,.22)"}`,borderRadius:5,padding:"5px 13px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?600:400,fontFamily:"inherit",transition:"all .12s",whiteSpace:"nowrap"});
+      const tbtn=(active)=>({background:active?"#fff":"rgba(255,255,255,.1)",border:`1px solid ${active?"#fff":"rgba(255,255,255,.2)"}`,borderRadius:7,padding:"7px 20px",fontSize:12,fontWeight:600,cursor:"pointer",color:active?"#003A8C":"rgba(255,255,255,.65)",fontFamily:"inherit",letterSpacing:".02em",transition:"all .15s"});
+      const cardHead=(col)=>({padding:"16px 20px 14px",display:"flex",justifyContent:"space-between",alignItems:"flex-end",borderBottom:"1px solid #EEEFF2",borderLeft:`3px solid ${col}`});
+
+      return(
+        <div style={{fontFamily:"system-ui,-apple-system,'Segoe UI',Arial,sans-serif",background:"#F1F2F5",color:"#4C4F54",minHeight:"100vh"}}>
+          <div style={{background:"linear-gradient(180deg,#00216A 0%,#001A52 100%)",boxShadow:"0 1px 0 rgba(0,0,0,.1)"}}>
+            <div style={{padding:"0 28px",display:"flex",justifyContent:"space-between",alignItems:"center",height:56,flexWrap:"wrap",gap:12,maxWidth:1680,margin:"0 auto"}}>
+              <div style={{display:"flex",alignItems:"center",gap:14}}>
+                <svg height="20" viewBox="0 0 200 30" xmlns="http://www.w3.org/2000/svg"><text x="0" y="22" fontFamily="system-ui,-apple-system,sans-serif" fontSize="18" fontWeight="700" fill="white" letterSpacing="1">TowerBrook</text></svg>
+                <div style={{width:1,height:22,background:"rgba(255,255,255,.25)"}}/>
+                <span style={{color:"#fff",fontSize:13.5,fontWeight:600,letterSpacing:".02em"}}>Portfolio AI Dashboard</span>
+                <span style={{display:"inline-flex",alignItems:"center",gap:7,fontSize:10,color:"rgba(255,255,255,.55)"}}>
+                  <span style={{width:6,height:6,background:liveData?"#4ADE80":"#94A3B8",borderRadius:"50%",animation:liveData?"blink 2.5s ease-in-out infinite":"none"}}/>
+                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"Connecting…":"30 Jun 2026"}
+                  <button onClick={()=>setRefreshTick(t=>t+1)} disabled={fetching} title="Refresh data" style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:4,color:"rgba(255,255,255,.7)",cursor:fetching?"not-allowed":"pointer",fontSize:11,padding:"2px 7px",fontFamily:"inherit",lineHeight:1.4,transition:"all .12s"}}>{fetching?"…":"↻"}</button>
+                </span>
+              </div>
+              <div style={{display:"flex",gap:14,alignItems:"center"}}>
+                <div style={{display:"flex",gap:4}}>{geos.map(g=><button key={g} style={nbtn(geo===g)} onClick={()=>{setGeo(g);setQ("");}}>{g==="Europe"?"EU":g}</button>)}</div>
+                <div style={{width:1,height:18,background:"rgba(255,255,255,.22)"}}/>
+                <div style={{display:"flex",gap:4}}>{funds.map(f=><button key={f} style={nbtn(fund===f)} onClick={()=>{setFund(f);setQ("");}}>{f}</button>)}</div>
+              </div>
+            </div>
+          </div>
+          <div style={{background:"#003A8C",borderTop:"1px solid rgba(255,255,255,.15)"}}>
+            <div style={{padding:"0 22px",display:"flex",alignItems:"center",gap:6,maxWidth:1680,margin:"0 auto",height:46}}>
+              {tabs.map(t=><button key={t.k} style={tbtn(page===t.k)} onClick={()=>{setPage(t.k);setQ("");}}>{t.label}</button>)}
+            </div>
+          </div>
+          <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
+            <Summary rows={filtered}/>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
+              <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
+              {q&&<span style={{fontSize:11.5,color:TB.medGray}}>{filtered.length} matches</span>}
+            </div>
+            <div style={{background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,overflow:"hidden",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)",marginBottom:18}}>
+              {page==="value"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Quantified AI Value Creation</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI economics alongside realized and targeted revenue, cost savings and investment</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasVC).length} companies</span></div><ValueTab rows={filtered}/></>}
+              {page==="blueprint"&&<><div style={cardHead(TB.navy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Blueprint</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>Operating-model readiness across the 7 AI blueprint pillars</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasBP).length} companies</span></div><BlueprintTab rows={filtered}/></>}
+              {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span></div><BlocksTab rows={filtered}/></>}
+            </div>
+            <div style={{background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,overflow:"hidden",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)"}}>
+              <div style={{padding:"16px 20px 14px",display:"flex",justifyContent:"space-between",alignItems:"flex-end",borderBottom:showNA?"1px solid #EEEFF2":"none",borderLeft:"3px solid #C8C9C7",cursor:"pointer"}} onClick={()=>setShowNA(!showNA)}>
+                <div><div style={{fontSize:14,fontWeight:700,color:TB.darkGray}}>Not yet assessed</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>Portfolio companies with no AI engagement data recorded</div></div>
+                <span style={{fontSize:11.5,color:TB.medGray}}>{na.length} companies <span style={{fontSize:12,display:"inline-block",transform:showNA?"rotate(180deg)":"none",transition:"transform .15s"}}>▾</span></span>
+              </div>
+              {showNA&&<div style={{padding:"6px 20px 20px",display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(196px,1fr))",gap:9,borderTop:"1px solid #EEEFF2"}}>
+                {na.map(c=><div key={c.id} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 11px",border:"1px solid #EEEFF2",borderRadius:7,background:"#F1F2F5"}}>
+                  <Fund f={c.fund}/><span style={{fontSize:11.5,color:TB.darkGray,fontWeight:500,flex:1,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.name}</span><Geo g={c.geo}/>
+                </div>)}
+              </div>}
+            </div>
+            <div style={{marginTop:16,fontSize:10.5,color:TB.medGray,textAlign:"center"}}>
+              TowerBrook Capital Partners · Portfolio AI Engagement Tracker ·{" "}
+              {lastUpdated?`Live data · refreshed ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} · auto-refresh every 2 min`:"Data as of 30 Jun 2026"}
+            </div>
+          </div>
+          <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+  </script>
+</body>
+</html>
