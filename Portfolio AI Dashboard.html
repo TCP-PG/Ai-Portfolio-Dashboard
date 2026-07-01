@@ -405,4 +405,16 @@
               {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span></div><BlocksTab rows={filtered}/></>}
             </div>
             <div style={{marginTop:16,fontSize:10.5,color:TB.medGray,textAlign:"center"}}>
-              TowerBrook Capital Partners · Portfolio AI Engag
+              TowerBrook Capital Partners · Portfolio AI Engagement Tracker ·{" "}
+              {lastUpdated?`Live data · refreshed ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} · auto-refresh every 2 min`:"Data as of 30 Jun 2026"}
+            </div>
+          </div>
+          <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
+  </script>
+</body>
+</html>
