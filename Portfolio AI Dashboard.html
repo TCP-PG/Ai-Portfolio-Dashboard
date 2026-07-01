@@ -276,25 +276,27 @@
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
           {[[GREEN.c,"Realized"],[TB.navy,"Targets"],[TB.burgundy,"Economics"]].map(([col,lbl])=><span key={lbl} style={{display:"flex",alignItems:"center",gap:6}}><span style={{width:9,height:9,borderRadius:2,background:col,display:"inline-block"}}/>{lbl}</span>)}
+          {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1364}}>
-          <colgroup><col style={{width:168}}/><col style={{width:80}}/><col style={{width:80}}/><col style={{width:80}}/><col style={{width:80}}/><col style={{width:100}}/><col style={{width:72}}/><col style={{width:80}}/><col style={{width:80}}/><col style={{width:80}}/><col style={{width:72}}/><col style={{width:80}}/><col style={{width:72}}/><col style={{width:80}}/><col style={{width:180}}/></colgroup>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1356}}>
+          <colgroup><col style={{width:168}}/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:108}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
           <thead><tr>
-            <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
-            <th colSpan={2} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Economics</th>
-            <th colSpan={3} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Readiness</th>
-            <th rowSpan={2} style={thS(TB.navy)}>Updated</th>
-            <th colSpan={2} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Realized to date</th>
-            <th colSpan={4} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Targets</th>
-            <th rowSpan={2} style={thS(TB.navy)}>AI{"\n"}Investment</th>
-            <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left"}}>Comment / Note</th>
-          </tr><tr>
-            <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th><th style={thS(TB.burgundy)}>ROI</th>
-            <th style={thS(TB.burgundy)}>AI Equity{"\n"}Story</th><th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th><th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
-            <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th><th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Revenue</th><th style={thS(TB.navy)}>Date</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Cost Savings</th><th style={thS(TB.navy)}>Date</th>
+            <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
+            <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th>
+            <th style={thS(TB.burgundy)}>ROI</th>
+            <th style={thS(TB.burgundy)}>AI Equity{"\n"}Story</th>
+            <th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th>
+            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
+            <th style={thS(TB.navy)}>Updated</th>
+            <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th>
+            <th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Revenue</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Rev Date</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Cost Savings</th>
+            <th style={thS(TB.navy)}>Target{"\n"}Cost Date</th>
+            <th style={thS(TB.navy)}>AI{"\n"}Investment</th>
+            <th style={{...thS(TB.navy),textAlign:"left"}}>Comment / Note</th>
           </tr></thead>
           <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";return<tr key={c.id} style={{background:z}}>
             <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
