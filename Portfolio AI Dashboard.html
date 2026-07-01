@@ -220,7 +220,7 @@
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Blueprint status</span>
-          {ST_OPTS.map(k=>{const s=ST[k];return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({s.w})</span></span>;})}
+          {ST_OPTS.map(k=>{const s=ST[k];const cnt=t.filter(c=>c.bp.some(v=>v===k)).length;if(cnt===0)return null;return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({cnt})</span></span>;})}
         </div>
         <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1100}}>
           <colgroup><col style={{width:168}}/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/></colgroup>
@@ -410,8 +410,4 @@
             </div>
           </div>
           <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
-        </div>
-      );
-    }
-
-    ReactDOM.createRoot(document.getElement
+ 
