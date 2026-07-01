@@ -277,7 +277,6 @@
       if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
-          {[[GREEN.c,"Realized"],[TB.navy,"Targets"],[TB.burgundy,"Economics"]].map(([col,lbl])=><span key={lbl} style={{display:"flex",alignItems:"center",gap:6}}><span style={{width:9,height:9,borderRadius:2,background:col,display:"inline-block"}}/>{lbl}</span>)}
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
