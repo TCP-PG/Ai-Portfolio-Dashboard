@@ -145,8 +145,8 @@
     const AMBER={c:"#8A5A12",bg:"#FBF0DA",bd:"#ECCF94"};
     const BLUEq={c:"#2E4C8C",bg:"#DEE5F2",bd:"#B4C2DF"};
     const RED={c:"#8A1A30",bg:"#F6DBDF",bd:"#E5A6AE"};
-    const ST={"In place":{w:3,...GREEN,label:"In place"},"Partial":{w:2,...AMBER,label:"Partial"},"Organised":{w:1,...BLUEq,label:"Organised"}};
-    const ST_OPTS=["In place","Partial","Organised"];
+    const ST={"In place":{w:3,...GREEN,label:"In place"},"Partial":{w:2,...AMBER,label:"Partial"},"Organised":{w:1,...BLUEq,label:"Organised"},"Not in place":{w:0,...RED,label:"Not in place"}};
+    const ST_OPTS=["In place","Partial","Organised","Not in place"];
     const CRIT=[["CEO","Sponsorship"],["AI Governance","Entity"],["Resource","Centralised Lab"],["Build / Buy /","Right Partner"],["Quick Iterative","Structure"],["AI Launch &","Diffusion"],["AI Value","Tracking"]];
     const BB_COLS=[["Market &","Customer"],["Value & Market","Proposition"],["Business &","Financial"],["Internal","Capabilities"]];
     const HMLm={H:GREEN,M:AMBER,L:RED};
@@ -414,7 +414,4 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<Dashboard />);
-  </script>
-</body>
-</html>
+    ReactDOM.createRoot(document.getElement
