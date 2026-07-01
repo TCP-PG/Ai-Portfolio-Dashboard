@@ -277,6 +277,8 @@
       if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
+          {[[GREEN.c,"Realized"],[TB.navy,"Targets"],[TB.burgundy,"Economics"]].map(([col,lbl])=><span key={lbl} style={{display:"flex",alignItems:"center",gap:6}}><span style={{width:9,height:9,borderRadius:2,background:col,display:"inline-block"}}/><span style={{fontSize:10.5,color:TB.darkGray}}>{lbl}</span></span>)}
+          <span style={{color:TB.medGray,fontSize:10}}>·</span>
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
@@ -290,8 +292,8 @@
             <th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th>
             <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
             <th style={thS(TB.navy)}>Updated</th>
-            <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th>
-            <th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
+            <th style={thS(GREEN.c)}>Realized{"\n"}Revenue</th>
+            <th style={thS(GREEN.c)}>Realized{"\n"}Cost Savings</th>
             <th style={thS(TB.navy)}>Target{"\n"}Revenue</th>
             <th style={thS(TB.navy)}>Target{"\n"}Rev Date</th>
             <th style={thS(TB.navy)}>Target{"\n"}Cost Savings</th>
