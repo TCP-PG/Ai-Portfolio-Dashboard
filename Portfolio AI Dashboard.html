@@ -352,10 +352,10 @@
           </div>
           <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
             <Summary rows={filtered}/>
-            <div style={{display:"flex",alignItems:"center",gap:14,padding:"7px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"wrap"}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,padding:"6px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"nowrap",overflow:"hidden"}}>
               <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
-              <div style={{width:1,height:14,background:"#E0E1E5"}}/>
-              {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:6}}><span style={{fontSize:9,fontWeight:800,padding:"1px 7px",borderRadius:3,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em"}}>{g}</span><span style={{fontSize:10.5,color:TB.darkGray}}>{s.desc}</span></span>;})}
+              <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
+              {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:5,flexShrink:1,minWidth:0}}><span style={{fontSize:9,fontWeight:800,padding:"1px 7px",borderRadius:3,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",flexShrink:0}}>{g}</span><span style={{fontSize:10,color:TB.darkGray,whiteSpace:"nowrap"}}>{s.desc}</span></span>;})}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
               <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
