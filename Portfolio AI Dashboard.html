@@ -98,6 +98,54 @@
     const hasVC=c=>[c.rRev,c.rCost,c.tRev,c.tCost,c.inv,c.note,c.spend,c.roi].some(Boolean);
     const tracked=c=>hasBP(c)||hasEQ(c)||hasVC(c);
 
+
+    function Fund({f}){
+      if(!f)return null;
+      var fc=FUND_COLORS[f]||{bg:TB.blue1};
+      return <span style={{fontSize:8,fontWeight:700,padding:"1px 5px",borderRadius:3,background:fc.bg,color:"#fff",letterSpacing:".04em",whiteSpace:"nowrap"}}>{f}</span>;
+    }
+
+    function Geo({g}){
+      if(!g)return null;
+      return <span style={{fontSize:8,fontWeight:600,padding:"1px 5px",borderRadius:3,background:"#ECEEF1",color:TB.darkGray,letterSpacing:".04em"}}>{g==="Europe"?"EU":g}</span>;
+    }
+
+    function Pill({v}){
+      if(!v)return <span style={{color:TB.lightGray,fontSize:10}}>{"—"}</span>;
+      var s=ST[v]||{bg:"#eee",c:"#999",bd:"#ccc"};
+      return <span style={{fontSize:9,fontWeight:700,padding:"2px 6px",borderRadius:3,background:s.bg,color:s.c,border:"1px solid "+s.bd,whiteSpace:"nowrap",display:"inline-block"}}>{v}</span>;
+    }
+
+    function HML({v}){
+      if(!v)return <span style={{color:TB.lightGray,fontSize:10}}>{"—"}</span>;
+      var s=HMLm[v];
+      if(!s)return <span style={{fontSize:10}}>{v}</span>;
+      return <span style={{fontSize:9,fontWeight:800,padding:"2px 6px",borderRadius:3,background:s.bg,color:s.c,border:"1px solid "+s.bd}}>{HML_FULL[v]||v}</span>;
+    }
+
+    function ScoreBar({s,hasBp}){
+      if(!hasBp)return null;
+      var pct=Math.round(s/21*100);
+      var col=pct>=86?GREEN.c:pct>=52?AMBER.c:RED.c;
+      return <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <div style={{flex:1,height:5,background:"#ECEDF0",borderRadius:3,overflow:"hidden"}}>
+          <div style={{width:pct+"%",height:"100%",background:col,borderRadius:3}}/>
+        </div>
+        <span style={{fontSize:11,fontWeight:700,color:col,minWidth:22,textAlign:"right"}}>{s}</span>
+      </div>;
+    }
+
+    function Money({v,col}){
+      if(!v)return <span style={{color:TB.lightGray,fontSize:10}}>{"—"}</span>;
+      return <span style={{fontSize:11,fontWeight:600,color:col||TB.navy}}>{v}</span>;
+    }
+
+    function Comms({v}){
+      if(!v||v==="Not concerned")return <span style={{color:TB.lightGray,fontSize:10}}>{"—"}</span>;
+      var s=COMMS[v]||{c:TB.darkGray,bg:"#eee",bd:"#ccc"};
+      return <span style={{fontSize:9,fontWeight:600,padding:"2px 6px",borderRadius:3,background:s.bg,color:s.c,border:"1px solid "+s.bd,whiteSpace:"nowrap",display:"inline-block"}}>{v}</span>;
+    }
+
     function AIGroupBadge({g}){
   const [pos,setPos]=React.useState(null);
   if(!g||!AIG[g])return null;
