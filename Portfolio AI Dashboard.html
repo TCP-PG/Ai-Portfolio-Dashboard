@@ -405,6 +405,7 @@
       const tabs=[{k:"value",label:"Quantified Value Creation"},{k:"blueprint",label:"AI Blueprint"},{k:"blocks",label:"AI Exit Readiness"}];
       const geos=["All","Europe","US"],funds=["All","PE","TSO","Delta"];
       const nbtn=(active)=>({background:active?"rgba(255,255,255,.16)":"transparent",border:`1px solid ${active?"rgba(255,255,255,.5)":"rgba(255,255,255,.22)"}`,borderRadius:5,padding:"5px 13px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?600:400,fontFamily:"inherit",transition:"all .12s",whiteSpace:"nowrap"});
+      const abcbtn=(g,active)=>{const s=g!=="All"?AIG[g]:null;return{background:active?(s?s.bg:"rgba(255,255,255,.16)"):"transparent",border:"1px solid "+(active?(s?s.bd:"rgba(255,255,255,.5)"):"rgba(255,255,255,.22)"),borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?(s?s.c:"#fff"):"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"};};
       const tbtn=(active)=>({background:active?"#fff":"rgba(255,255,255,.1)",border:`1px solid ${active?"#fff":"rgba(255,255,255,.2)"}`,borderRadius:7,padding:"7px 20px",fontSize:12,fontWeight:600,cursor:"pointer",color:active?"#003A8C":"rgba(255,255,255,.65)",fontFamily:"inherit",letterSpacing:".02em",transition:"all .15s"});
       const cardHead=(col)=>({padding:"16px 20px 14px",display:"flex",justifyContent:"space-between",alignItems:"flex-end",borderBottom:"1px solid #EEEFF2",borderLeft:`3px solid ${col}`});
 
@@ -429,7 +430,7 @@
                 <div style={{width:1,height:18,background:"rgba(255,255,255,.22)"}}/>
                 <div style={{display:"flex",gap:4,alignItems:"center"}}>
                   <span style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,.4)",letterSpacing:".1em",marginRight:2}}>AI</span>
-                  {["All","A","B","C"].map(g=>{const s=g!=="All"?AIG[g]:null;const active=aiGrp===g;return(<button key={g} style={{background:active?(s?s.bg:"rgba(255,255,255,.16)"):"transparent",border:`1px solid ${active?(s?s.bd:"rgba(255,255,255,.5)"):"rgba(255,255,255,.22)"}`,borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?(s?s.c:"#fff"):"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"}} onClick={()=>{setAiGrp(g);setQ("");}}>{g}</button>);})}
+                  {["All","A","B","C"].map(g=><button key={g} style={abcbtn(g,aiGrp===g)} onClick={()=>{setAiGrp(g);setQ("");}}>{g}</button>)}
                 </div>
               </div>
             </div>
