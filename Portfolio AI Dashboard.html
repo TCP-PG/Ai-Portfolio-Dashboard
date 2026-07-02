@@ -297,8 +297,8 @@
       const [fund, setFund] = useState("All");
       const [q, setQ] = useState("");
       const [aiGrp, setAiGrp] = useState("All");
-      const [liveData, setLiveData] = useState(null);
-      const [lastUpdated, setLastUpdated] = useState(null);
+      const [liveData, setLiveData] = useState(()=>{try{const c=localStorage.getItem('tcpAIDashCache');if(c){const p=JSON.parse(c);if(p&&p.data&&p.data.length>0)return p.data;}}catch(e){}return null;});
+      const [lastUpdated, setLastUpdated] = useState(()=>{try{const c=localStorage.getItem('tcpAIDashCache');if(c){const p=JSON.parse(c);if(p&&p.ts)return new Date(p.ts);}}catch(e){}return null;});
       const [fetching, setFetching] = useState(false);
       const [refreshTick, setRefreshTick] = useState(0);
 
