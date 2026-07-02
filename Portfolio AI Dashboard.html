@@ -113,7 +113,7 @@
       const s=AIG[g];
       const onEnter=e=>{const r=e.currentTarget.getBoundingClientRect();setPos({top:r.bottom+6,left:r.left});setShow(true);};
       return <span onMouseEnter={onEnter} onMouseLeave={()=>setShow(false)} style={{display:"inline-flex",position:"relative"}}>
-        <span style={{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",cursor:"default"}}>{g}</span>
+        <span style={{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bd,color:"#fff",letterSpacing:".04em",cursor:"default"}}>{g}</span>
         {show&&ReactDOM.createPortal(<div style={{position:"fixed",top:pos.top,left:pos.left,background:"#00216A",color:"#fff",fontSize:11,padding:"8px 13px",borderRadius:7,zIndex:99999,boxShadow:"0 4px 16px rgba(0,0,0,.3)",pointerEvents:"none",maxWidth:300,lineHeight:1.5}}>{s.desc}</div>,document.body)}
       </span>;
     }
@@ -340,7 +340,7 @@
                 <div style={{width:1,height:18,background:"rgba(255,255,255,.22)"}}/>
                 <div style={{display:"flex",gap:4,alignItems:"center"}}>
                   <span style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,.4)",letterSpacing:".1em",marginRight:2}}>AI</span>
-                  {["All","A","B","C"].map(g=>{const s=g!=="All"?AIG[g]:null;const active=aiGrp===g;return<button key={g} style={{background:active?(s?s.bg:"rgba(255,255,255,.16)"):"transparent",border:`1px solid ${active?(s?s.bd:"rgba(255,255,255,.5)"):"rgba(255,255,255,.22)"}`,borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?(s?s.c:"#fff"):"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"}} onClick={()=>{setAiGrp(g);setQ("");}}>{g}</button>;})}
+                  {["All","A","B","C"].map(g=>{const s=g!=="All"?AIG[g]:null;const active=aiGrp===g;return<button key={g} style={{background:active?(s?s.bd:"rgba(255,255,255,.16)"):"transparent",border:"1px solid "+(active?(s?s.bd:"rgba(255,255,255,.5)"):"rgba(255,255,255,.22)"),borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"}} onClick={()=>{setAiGrp(g);setQ("");}}>{g}</button>;})}
                 </div>
               </div>
             </div>
@@ -355,7 +355,7 @@
             <div style={{display:"flex",alignItems:"center",gap:12,padding:"6px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"nowrap",overflow:"hidden"}}>
               <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
               <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
-              {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:5,flexShrink:1,minWidth:0}}><span style={{fontSize:9,fontWeight:800,padding:"1px 7px",borderRadius:3,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",flexShrink:0}}>{g}</span><span style={{fontSize:10,color:TB.darkGray,whiteSpace:"nowrap"}}>{s.desc}</span></span>;})}
+              {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:5,flexShrink:1,minWidth:0}}><span style={{fontSize:9,fontWeight:800,padding:"1px 7px",borderRadius:3,background:s.bd,color:"#fff",letterSpacing:".04em",flexShrink:0}}>{g}</span><span style={{fontSize:10,color:TB.darkGray,whiteSpace:"nowrap"}}>{s.desc}</span></span>;})}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
               <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
