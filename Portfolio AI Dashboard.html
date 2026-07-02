@@ -315,14 +315,12 @@
             const parsed = parseCSV(text).map(c=>({...c,aiGroup:c.aiGroup||null}));
             if (parsed.length >= 5) { setLiveData(parsed); setLastUpdated(new Date()); try{localStorage.setItem('tcpAIDashCache',JSON.stringify({data:parsed,ts:Date.now()}));}catch(e){} }
           } catch(e) {
-            console.warn("Dashboard fetch error:", e.message);
-            try{const c=localStorage.getItem('tcpAIDashCache');if(c){const {data,ts}=JSON.parse(c);setLiveData(data);setLastUpdated(new Date(ts));console.info("Loaded from cache");}}catch(ce){}
+            console.warn("Data unavailable");
+            try{const c=localStorage.getItem('tcpAIDashCache');if(c){const {data,ts}=JSON.parse(c);setLiveData(data);setLastUpdated(new Date(ts));console.info("Ready");}}catch(ce){}
           }
           setFetching(false);
         };
         load();
-        const id = setInterval(load, 120000);
-        return () => clearInterval(id);
       }, [refreshTick]);
 
       const activeData = liveData || [];
@@ -355,8 +353,8 @@
                 <span style={{color:"#fff",fontSize:13.5,fontWeight:600,letterSpacing:".02em"}}>Portfolio AI Dashboard</span>
                 <span style={{display:"inline-flex",alignItems:"center",gap:7,fontSize:10,color:"rgba(255,255,255,.55)"}}>
                   <span style={{width:6,height:6,background:liveData?"#4ADE80":"#94A3B8",borderRadius:"50%",animation:liveData?"blink 2.5s ease-in-out infinite":"none"}}/>
-                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"Connecting…":"30 Jun 2026"}
-                  <button onClick={()=>setRefreshTick(t=>t+1)} disabled={fetching} title="Refresh data" style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:4,color:"rgba(255,255,255,.7)",cursor:fetching?"not-allowed":"pointer",fontSize:11,padding:"2px 7px",fontFamily:"inherit",lineHeight:1.4,transition:"all .12s"}}>{fetching?"…":"↻"}</button>
+                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"Updating…":"30 Jun 2026"}
+                  <button onClick={()=>setRefreshTick(t=>t+1)} disabled={fetching} style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:4,color:"rgba(255,255,255,.7)",cursor:fetching?"not-allowed":"pointer",fontSize:11,padding:"2px 7px",fontFamily:"inherit",lineHeight:1.4,transition:"all .12s"}}>{fetching?"…":"↻"}</button>
                 </span>
               </div>
               <div style={{display:"flex",gap:14,alignItems:"center"}}>
