@@ -105,7 +105,7 @@
   const tips={A:"Operationally resilient with critical human assets and lower impact AI applications",B:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",C:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve"};
   return<span style={{position:"relative",display:"inline-flex"}} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}>
     <span style={{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",whiteSpace:"nowrap",cursor:"default"}}>{g}</span>
-    {hov&&<div style={{position:"absolute",top:"calc(100% + 6px)",left:0,background:"#fff",color:TB.navy,fontSize:11,padding:"8px 12px",borderRadius:7,zIndex:999,boxShadow:"0 2px 12px rgba(0,33,106,.13)",border:"1px solid #E4E5E9",pointerEvents:"none",fontWeight:400,lineHeight:1.5,whiteSpace:"nowrap"}}>{tips[g]}</div>}
+    {hov&&<div style={{position:"absolute",top:"calc(100% + 6px)",left:0,background:"#00216A",color:"#fff",fontSize:11,padding:"9px 13px",borderRadius:7,zIndex:9999,boxShadow:"0 4px 16px rgba(0,0,0,.2)",pointerEvents:"none",fontWeight:400,lineHeight:1.6,whiteSpace:"nowrap"}}>{tips[g]}</div>}
   </span>;
 }
     function Pill({v}){if(!v||!ST[v])return null;const s=ST[v];return<span style={{fontSize:9.5,fontWeight:600,padding:"3px 7px",borderRadius:4,whiteSpace:"nowrap",display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{s.label}</span>;}
