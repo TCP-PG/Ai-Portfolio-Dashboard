@@ -89,7 +89,7 @@
     const HML_FULL={H:"High",M:"Medium",L:"Low"};
     const COMMS={"Financing - Done":{c:GREEN.c,bg:GREEN.bg,bd:GREEN.bd},"Financing - In progress":{c:BLUEq.c,bg:BLUEq.bg,bd:BLUEq.bd},"Financing - To start":{c:TB.darkGray,bg:"#ECEEF1",bd:"#DADCE0"},"Exit - In progress":{c:TB.burgundy,bg:"#DFD3D9",bd:"#C0A6B3"},"Not concerned":{c:TB.medGray,bg:"#F0F1F3",bd:"#E2E3E5"}};
     const FUND_COLORS={"PE":{bg:TB.navy},"TSO":{bg:TB.blue1},"Delta":{bg:TB.burgundy},"PE & Delta":{bg:TB.burgundy}};
-    const AIG={A:{label:"Group A",short:"Operationally resilient, lower AI impact",desc:"Operationally resilient with critical human assets and lower impact AI applications",bg:"#EEF3FB",bd:"#1D6FD8",c:"#1D6FD8"},B:{label:"Group B",short:"AI improves productivity & reduces cost",desc:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",bg:"#FBF0DA",bd:"#D97706",c:"#D97706"},C:{label:"Group C",short:"Significant AI substitution opportunity",desc:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve",bg:"#FEE2E2",bd:"#B91C3C",c:"#B91C3C"}};
+    const AIG={A:{label:"Group A",short:"Lower AI disruption risk",desc:"Operationally resilient with critical human assets and lower impact AI applications",bg:"#EEF3FB",bd:"#1D6FD8",c:"#1D6FD8"},B:{label:"Group B",short:"AI productivity & cost gains",desc:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",bg:"#FBF0DA",bd:"#D97706",c:"#D97706"},C:{label:"Group C",short:"Significant AI substitution",desc:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve",bg:"#FEE2E2",bd:"#B91C3C",c:"#B91C3C"}};
 
     const scoreOf=bp=>bp.reduce((a,v)=>a+(v&&ST[v]?ST[v].w:0),0);
     const rowScore=c=>{const n=parseInt(c.bpScore);return(!isNaN(n)&&n>=0)?n:scoreOf(c.bp);};
@@ -356,7 +356,7 @@
               <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
               <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"inline-flex",alignItems:"center",gap:5,background:s.bd,borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>{g}</span><span style={{fontSize:10,color:"#fff",fontWeight:500,whiteSpace:"nowrap"}}>{s.short}</span></span>;})}
+                {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"inline-flex",alignItems:"center",gap:5,background:s.bd,borderRadius:5,padding:"4px 10px",maxWidth:200}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em",flexShrink:0}}>{g}</span><span style={{fontSize:10,color:"#fff",fontWeight:500,lineHeight:1.35}}>{s.short}</span></span>;})}
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
