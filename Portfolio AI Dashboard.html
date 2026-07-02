@@ -18,7 +18,7 @@
 </head>
 <body>
   <div id="root"><div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui;color:#8A8D90;font-size:14px;">Loading dashboard…</div></div>
-  <script type="text/babel">
+  <script type="text/babel" data-presets="react">
     const { useState, useEffect } = React;
 
     const PA_URL = "https://default22bdc63c37444c46b50d7437110db0.d5.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a73dd05e3cd445dda74e2f9f6f1d0112/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=doTs9hpgHB3zQP4ba4XuIqPNVCnc1I_X0rk14D-7JZ4";
@@ -114,7 +114,18 @@
 
     function NameCell({c}){return<div style={{display:"flex",flexDirection:"column",gap:3,textAlign:"left"}}><span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span><span style={{display:"flex",alignItems:"center",gap:5}}><Fund f={c.fund}/><Geo g={c.geo}/><AIGroupBadge g={c.aiGroup}/></span></div>;}
 
-    function DonutSVG({g,a,r}){const n=g+a+r||1,C=2*Math.PI*40;const seg=(v,off)=>`stroke-dasharray="${C*v/n} ${C-C*v/n}" stroke-dashoffset="${off}"`;const gO=C*.25,aO=C*.25-C*g/n,rO=C*.25-C*(g+a)/n;return<svg width="84" height="84" viewBox="0 0 90 90" dangerouslySetInnerHTML={{__html:`<circle cx="45" cy="45" r="40" fill="none" stroke="#ECEDF0" stroke-width="8"/>${g>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${GREEN.c}" stroke-width="8" ${seg(g,gO)}/>`:""}${a>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${AMBER.c}" stroke-width="8" ${seg(a,aO)}/>`:""}${r>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${RED.c}" stroke-width="8" ${seg(r,rO)}/>`:""}  <text x="45" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="${TB.navy}" font-family="system-ui,sans-serif">${n}</text><text x="45" y="60" text-anchor="middle" font-size="7.5" fill="${TB.medGray}" font-family="system-ui,sans-serif" letter-spacing=".08em">SCORED</text>`}}/>;}
+    function DonutSVG({g,a,r}){
+      var n=g+a+r||1,C=2*Math.PI*40;
+      var seg=function(v,off){return 'stroke-dasharray="'+(C*v/n)+' '+(C-C*v/n)+'" stroke-dashoffset="'+off+'"';};
+      var gO=C*.25,aO=C*.25-C*g/n,rO=C*.25-C*(g+a)/n;
+      var h='<circle cx="45" cy="45" r="40" fill="none" stroke="#ECEDF0" stroke-width="8"/>'
+        +(g>0?'<circle cx="45" cy="45" r="40" fill="none" stroke="'+GREEN.c+'" stroke-width="8" '+seg(g,gO)+'/>':'')
+        +(a>0?'<circle cx="45" cy="45" r="40" fill="none" stroke="'+AMBER.c+'" stroke-width="8" '+seg(a,aO)+'/>':'')
+        +(r>0?'<circle cx="45" cy="45" r="40" fill="none" stroke="'+RED.c+'" stroke-width="8" '+seg(r,rO)+'/>':'')
+        +'<text x="45" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="'+TB.navy+'" font-family="system-ui,sans-serif">'+n+'</text>'
+        +'<text x="45" y="60" text-anchor="middle" font-size="7.5" fill="'+TB.medGray+'" font-family="system-ui,sans-serif" letter-spacing=".08em">SCORED</text>';
+      return <svg width="84" height="84" viewBox="0 0 90 90" dangerouslySetInnerHTML={{__html:h}}/>;
+    }
     function MixBar({parts}){const tot=parts.reduce((a,p)=>a+p.v,0)||1;return<div><div style={{display:"flex",height:9,borderRadius:5,overflow:"hidden",background:"#ECEDF0"}}>{parts.filter(p=>p.v>0).map(p=><div key={p.label} title={p.label+": "+p.v} style={{width:(p.v/tot*100)+"%",background:p.c}}/>)}</div><div style={{display:"flex",flexWrap:"wrap",gap:"4px 14px",marginTop:9}}>{parts.map(p=><span key={p.label} style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:TB.darkGray}}><span style={{width:8,height:8,borderRadius:2,display:"inline-block",background:p.c}}/>{p.label} <b style={{color:TB.navy}}>{p.v}</b></span>)}</div></div>;}
 
     function Summary({rows}){
@@ -360,7 +371,7 @@
                 <span style={{color:"#fff",fontSize:13.5,fontWeight:600,letterSpacing:".02em"}}>Portfolio AI Dashboard</span>
                 <span style={{display:"inline-flex",alignItems:"center",gap:7,fontSize:10,color:"rgba(255,255,255,.55)"}}>
                   <span style={{width:6,height:6,background:liveData?"#4ADE80":"#94A3B8",borderRadius:"50%",animation:liveData?"blink 2.5s ease-in-out infinite":"none"}}/>
-                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"":""}
+                  {lastUpdated?"Live · "+lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):fetching?"":""}
                   <button onClick={()=>setRefreshTick(t=>t+1)} disabled={fetching} style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:4,color:"rgba(255,255,255,.7)",cursor:fetching?"not-allowed":"pointer",fontSize:11,padding:"2px 7px",fontFamily:"inherit",lineHeight:1.4,transition:"all .12s"}}>{fetching?"…":"↻"}</button>
                 </span>
               </div>
@@ -399,10 +410,10 @@
             </div>
             <div style={{marginTop:16,fontSize:10.5,color:TB.medGray,textAlign:"center"}}>
               TowerBrook Capital Partners · Portfolio AI Dashboard
-              {lastUpdated?` · Last updated ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:""}
+              {lastUpdated?" · Last updated "+lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""}
             </div>
           </div>
-          <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
+          <style>{"@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}"}</style>
         </div>
       );
     }
