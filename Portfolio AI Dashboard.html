@@ -352,14 +352,8 @@
           </div>
           <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
             <Summary rows={filtered}/>
-            <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"wrap",rowGap:6}}>
-              <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
-              <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
-              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#1D6FD8",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>A</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>Lower AI disruption risk</span></span>
-                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#D97706",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>B</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>AI productivity &amp; cost gains</span></span>
-                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#B91C3C",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>C</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>Significant AI substitution</span></span>
-              </div>
+            <div style={{display:"flex",gap:10,marginBottom:14}}>
+              {["A","B","C"].map(g=>{const s=AIG[g];return<div key={g} style={{flex:1,display:"flex",alignItems:"flex-start",gap:8,background:s.bg,border:"1px solid "+s.bd,borderRadius:8,padding:"9px 12px"}}><span style={{fontSize:9,fontWeight:800,padding:"2px 7px",borderRadius:4,background:s.bd,color:"#fff",letterSpacing:".04em",flexShrink:0,marginTop:1}}>{g}</span><span style={{fontSize:10.5,color:s.c,lineHeight:1.45,fontWeight:500}}>{s.desc}</span></div>;})}
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
               <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
