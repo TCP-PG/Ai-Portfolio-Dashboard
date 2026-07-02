@@ -171,7 +171,7 @@
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Blueprint status</span>
           {ST_OPTS.map(k=>{const s=ST[k];const cnt=t.filter(c=>c.bp.some(v=>v===k)).length;if(cnt===0)return null;return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({cnt})</span></span>;})}
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1168}}>
+        <div style={{overflowX:"auto"}}><table style={{width:1099,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col style={{width:195}}/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/><col style={{width:68}}/></colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
@@ -202,7 +202,7 @@
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Readiness</span>
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:700}}>
+        <div style={{overflowX:"auto"}}><table style={{width:717,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col style={{width:195}}/><col style={{width:96}}/><col style={{width:74}}/>{BB_COLS.map((_,i)=><col key={i} style={{width:88}}/>)}</colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.burgundy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
@@ -230,7 +230,7 @@
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",tableLayout:"fixed",minWidth:1356}}>
+        <div style={{overflowX:"auto"}}><table style={{width:1483,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col style={{width:195}}/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:108}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
           <thead><tr>
             <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
@@ -352,10 +352,12 @@
           </div>
           <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
             <Summary rows={filtered}/>
-            <div style={{display:"flex",alignItems:"center",gap:12,padding:"6px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"nowrap",overflow:"hidden"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"wrap"}}>
               <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
               <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
-              {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:5,flexShrink:0,background:s.bg,border:"1px solid "+s.bd,borderRadius:5,padding:"3px 8px 3px 4px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 7px",borderRadius:3,background:s.bd,color:"#fff",letterSpacing:".04em"}}>{g}</span><span style={{fontSize:10,color:s.c,whiteSpace:"nowrap",fontWeight:500}}>{s.short}</span></span>;})}
+              <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"inline-flex",alignItems:"center",gap:5,background:s.bd,borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>{g}</span><span style={{fontSize:10,color:"#fff",fontWeight:500,whiteSpace:"nowrap"}}>{s.short}</span></span>;})}
+              </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
               <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
