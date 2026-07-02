@@ -98,7 +98,16 @@
     const hasVC=c=>[c.rRev,c.rCost,c.tRev,c.tCost,c.inv,c.note,c.spend,c.roi].some(Boolean);
     const tracked=c=>hasBP(c)||hasEQ(c)||hasVC(c);
 
-    function AIGroupBadge({g}){if(!g||!AIG[g])return null;const s=AIG[g];return<span style={{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",whiteSpace:"nowrap"}}>{g}</span>;}
+    function AIGroupBadge({g}){
+  const [hov,setHov]=React.useState(false);
+  if(!g||!AIG[g])return null;
+  const s=AIG[g];
+  const tips={A:"AI Opportunity Group A — Operationally resilient with lower AI impact on business model",B:"AI Opportunity Group B — AI can meaningfully improve productivity and reduce costs",C:"AI Opportunity Group C — AI can significantly transform operations and reduce dependency on human tasks"};
+  return<span style={{position:"relative",display:"inline-flex"}} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}>
+    <span style={{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:`1px solid ${s.bd}`,letterSpacing:".04em",whiteSpace:"nowrap",cursor:"default"}}>{g}</span>
+    {hov&&<div style={{position:"absolute",bottom:"calc(100% + 6px)",left:"50%",transform:"translateX(-50%)",background:"#1A1A2E",color:"#fff",fontSize:11,padding:"7px 11px",borderRadius:6,whiteSpace:"nowrap",zIndex:999,boxShadow:"0 4px 12px rgba(0,0,0,.25)",pointerEvents:"none",fontWeight:400,lineHeight:1.4}}>{tips[g]}</div>}
+  </span>;
+}
     function Pill({v}){if(!v||!ST[v])return null;const s=ST[v];return<span style={{fontSize:9.5,fontWeight:600,padding:"3px 7px",borderRadius:4,whiteSpace:"nowrap",display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{s.label}</span>;}
     function HML({v}){if(!v||!HMLm[v])return null;const s=HMLm[v];return<span style={{fontSize:10,fontWeight:700,padding:"2px 7px",borderRadius:3,display:"inline-block",background:s.bg,color:"#1A1A1A",border:`1px solid ${s.bd}`}}>{v}</span>;}
     function Comms({v}){if(!v)return null;const s=COMMS[v]||{bg:"#ECEEF1",bd:"#DADCE0"};return<span style={{fontSize:9,fontWeight:600,padding:"2px 5px",borderRadius:3,display:"inline-block",background:s.bg,color:"#1A1A1A",border:`1px solid ${s.bd}`,lineHeight:1.35,whiteSpace:"normal"}}>{v}</span>;}
@@ -353,7 +362,7 @@
                 <span style={{color:"#fff",fontSize:13.5,fontWeight:600,letterSpacing:".02em"}}>Portfolio AI Dashboard</span>
                 <span style={{display:"inline-flex",alignItems:"center",gap:7,fontSize:10,color:"rgba(255,255,255,.55)"}}>
                   <span style={{width:6,height:6,background:liveData?"#4ADE80":"#94A3B8",borderRadius:"50%",animation:liveData?"blink 2.5s ease-in-out infinite":"none"}}/>
-                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"Updating…":"30 Jun 2026"}
+                  {lastUpdated?`Live · ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:fetching?"":""}
                   <button onClick={()=>setRefreshTick(t=>t+1)} disabled={fetching} style={{background:"rgba(255,255,255,.12)",border:"1px solid rgba(255,255,255,.25)",borderRadius:4,color:"rgba(255,255,255,.7)",cursor:fetching?"not-allowed":"pointer",fontSize:11,padding:"2px 7px",fontFamily:"inherit",lineHeight:1.4,transition:"all .12s"}}>{fetching?"…":"↻"}</button>
                 </span>
               </div>
@@ -379,7 +388,7 @@
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18,flexWrap:"wrap"}}>
               <input style={{fontSize:12.5,fontFamily:"inherit",border:"1px solid #E4E5E9",borderRadius:8,padding:"9px 13px",width:220,color:TB.navy,background:"#fff",outline:"none"}} placeholder="Search company…" value={q} onChange={e=>setQ(e.target.value)}/>
               {q&&<span style={{fontSize:11.5,color:TB.medGray}}>{filtered.length} matches</span>}
-              <span style={{display:"flex",gap:14,alignItems:"center",marginLeft:"auto",flexWrap:"wrap"}}>{["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:5,fontSize:10.5,color:TB.darkGray}}><AIGroupBadge g={g}/><span style={{color:TB.medGray}}>{s.desc}</span></span>;})}</span>
+              <span style={{display:"flex",gap:18,alignItems:"center",marginLeft:"auto",flexWrap:"wrap"}}><span style={{fontSize:11,fontWeight:600,color:TB.medGray,letterSpacing:".04em"}}>AI OPPORTUNITY GROUP</span>{["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"flex",alignItems:"center",gap:6,fontSize:11.5,color:TB.darkGray}}><AIGroupBadge g={g}/><span style={{color:TB.darkGray,fontWeight:500}}>{s.desc}</span></span>;})}</span>
             </div>
             <div style={{background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,overflow:"hidden",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)",marginBottom:18}}>
               {page==="value"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Quantified AI Value Creation</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI economics alongside realized and targeted revenue, cost savings and investment</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasVC).length} companies</span></div><ValueTab rows={filtered}/></>}
@@ -387,8 +396,8 @@
               {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span></div><BlocksTab rows={filtered}/></>}
             </div>
             <div style={{marginTop:16,fontSize:10.5,color:TB.medGray,textAlign:"center"}}>
-              TowerBrook Capital Partners · Portfolio AI Engagement Tracker ·{" "}
-              {lastUpdated?`Live data · refreshed ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})} · auto-refresh every 2 min`:"Data as of 30 Jun 2026"}
+              TowerBrook Capital Partners · Portfolio AI Dashboard
+              {lastUpdated?` · Last updated ${lastUpdated.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}`:""}
             </div>
           </div>
           <style>{`@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}`}</style>
