@@ -352,11 +352,13 @@
           </div>
           <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
             <Summary rows={filtered}/>
-            <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"wrap"}}>
+            <div style={{display:"flex",alignItems:"center",gap:10,padding:"8px 14px",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,marginBottom:14,flexWrap:"wrap",rowGap:6}}>
               <span style={{fontSize:9,fontWeight:700,color:TB.medGray,letterSpacing:".1em",textTransform:"uppercase",whiteSpace:"nowrap"}}>AI Group</span>
               <div style={{width:1,height:14,background:"#E0E1E5",flexShrink:0}}/>
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {["A","B","C"].map(g=>{const s=AIG[g];return<span key={g} style={{display:"inline-flex",alignItems:"center",gap:5,background:s.bd,borderRadius:5,padding:"4px 10px",maxWidth:200}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em",flexShrink:0}}>{g}</span><span style={{fontSize:10,color:"#fff",fontWeight:500,lineHeight:1.35}}>{s.short}</span></span>;})}
+                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#1D6FD8",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>A</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>Lower AI disruption risk</span></span>
+                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#D97706",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>B</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>AI productivity &amp; cost gains</span></span>
+                <span style={{display:"inline-flex",alignItems:"center",gap:5,background:"#B91C3C",borderRadius:5,padding:"4px 10px"}}><span style={{fontSize:9,fontWeight:800,padding:"1px 5px",borderRadius:3,background:"rgba(0,0,0,.18)",color:"#fff",letterSpacing:".04em"}}>C</span><span style={{fontSize:10,color:"#fff",fontWeight:500}}>Significant AI substitution</span></span>
               </div>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18}}>
