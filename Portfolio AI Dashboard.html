@@ -103,16 +103,15 @@
   if(!g||!AIG[g])return null;
   const s=AIG[g];
   const tips={A:"Operationally resilient with critical human assets and lower impact AI applications",B:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",C:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve"};
+  const badgeStyle={fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:"1px solid "+s.bd,letterSpacing:".04em",whiteSpace:"nowrap",cursor:"default"};
+  const tipStyle={position:"fixed",top:pos?pos.top:0,left:pos?pos.left:0,background:"#00216A",color:"#fff",fontSize:11,padding:"9px 14px",borderRadius:7,zIndex:99999,boxShadow:"0 4px 20px rgba(0,0,0,.3)",pointerEvents:"none",fontWeight:400,lineHeight:1.6,whiteSpace:"nowrap"};
   const onEnter=e=>{const r=e.currentTarget.getBoundingClientRect();setPos({top:r.bottom+6,left:r.left});};
-  return React.createElement(React.Fragment,null,
-    React.createElement("span",{style:{display:"inline-flex"},onMouseEnter:onEnter,onMouseLeave:()=>setPos(null)},
-      React.createElement("span",{style:{fontSize:8.5,fontWeight:800,padding:"1px 6px",borderRadius:4,background:s.bg,color:s.c,border:"1px solid "+s.bd,letterSpacing:".04em",whiteSpace:"nowrap",cursor:"default"}},g)
-    ),
-    pos&&ReactDOM.createPortal(
-      React.createElement("div",{style:{position:"fixed",top:pos.top,left:pos.left,background:"#00216A",color:"#fff",fontSize:11,padding:"9px 13px",borderRadius:7,zIndex:99999,boxShadow:"0 4px 16px rgba(0,0,0,.25)",pointerEvents:"none",fontWeight:400,lineHeight:1.6,whiteSpace:"nowrap"}},tips[g]),
-      document.body
-    )
-  );
+  return <>
+    <span style={{display:"inline-flex"}} onMouseEnter={onEnter} onMouseLeave={()=>setPos(null)}>
+      <span style={badgeStyle}>{g}</span>
+    </span>
+    {pos&&ReactDOM.createPortal(<div style={tipStyle}>{tips[g]}</div>,document.body)}
+  </>;
 }
 
     function NameCell({c}){return<div style={{display:"flex",flexDirection:"column",gap:3,textAlign:"left"}}><span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span><span style={{display:"flex",alignItems:"center",gap:5}}><Fund f={c.fund}/><Geo g={c.geo}/><AIGroupBadge g={c.aiGroup}/></span></div>;}
