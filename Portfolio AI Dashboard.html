@@ -89,7 +89,7 @@
     const HML_FULL={H:"High",M:"Medium",L:"Low"};
     const COMMS={"Financing - Done":{c:GREEN.c,bg:GREEN.bg,bd:GREEN.bd},"Financing - In progress":{c:BLUEq.c,bg:BLUEq.bg,bd:BLUEq.bd},"Financing - To start":{c:TB.darkGray,bg:"#ECEEF1",bd:"#DADCE0"},"Exit - In progress":{c:TB.burgundy,bg:"#DFD3D9",bd:"#C0A6B3"},"Not concerned":{c:TB.medGray,bg:"#F0F1F3",bd:"#E2E3E5"}};
     const FUND_COLORS={"PE":{bg:TB.navy},"TSO":{bg:TB.blue1},"Delta":{bg:TB.burgundy},"PE & Delta":{bg:TB.burgundy}};
-    const AIG={A:{label:"Group A",short:"Lower AI disruption risk",desc:"Operationally resilient with critical human assets and lower impact AI applications",bg:"#DBEAFE",bd:"#1D6FD8",c:"#1565C0"},B:{label:"Group B",short:"AI productivity & cost gains",desc:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",bg:"#FEF3C7",bd:"#D97706",c:"#92400E"},C:{label:"Group C",short:"Significant AI substitution",desc:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve",bg:"#FFE4E6",bd:"#B91C3C",c:"#9B1C2E"}};
+    const AIG={A:{label:"Group A",short:"Lower AI disruption risk",desc:"Operationally resilient with critical human assets and lower impact AI applications",bg:"#DBEAFE",bd:"#4A7FBF",c:"#1A5490"},B:{label:"Group B",short:"AI productivity & cost gains",desc:"Meaningful opportunity for AI to improve human capital productivity, customer outcomes and reduce cost to serve",bg:"#FEF3C7",bd:"#C98015",c:"#7A3A08"},C:{label:"Group C",short:"Significant AI substitution",desc:"Significant opportunity for AI to improve human capital productivity as well as substitution while improving outcomes and reducing cost to serve",bg:"#FFE4E6",bd:"#A82040",c:"#7A1430"}};
 
     const scoreOf=bp=>bp.reduce((a,v)=>a+(v&&ST[v]?ST[v].w:0),0);
     const rowScore=c=>{const n=parseInt(c.bpScore);return(!isNaN(n)&&n>=0)?n:scoreOf(c.bp);};
@@ -230,8 +230,8 @@
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:1483,borderCollapse:"collapse",tableLayout:"fixed"}}>
-          <colgroup><col style={{width:195}}/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:108}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
+        <div style={{overflowX:"auto"}}><table style={{width:1525,borderCollapse:"collapse",tableLayout:"fixed"}}>
+          <colgroup><col style={{width:195}}/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:150}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
           <thead><tr>
             <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
             <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th>
