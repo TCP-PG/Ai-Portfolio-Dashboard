@@ -208,19 +208,28 @@
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Readiness</span>
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:717,borderCollapse:"collapse",tableLayout:"fixed"}}>
-          <colgroup><col style={{width:195}}/><col style={{width:96}}/><col style={{width:74}}/>{BB_COLS.map((_,i)=><col key={i} style={{width:88}}/>)}</colgroup>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
+          <colgroup><col/><col style={{width:96}}/><col style={{width:74}}/>{BB_COLS.map((_,i)=><col key={i} style={{width:84}}/>)}<col style={{width:72}}/><col style={{width:72}}/><col style={{width:150}}/></colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.burgundy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
             <th rowSpan={2} style={thS(TB.burgundy)}>Last Board{"\n"}Presentation</th>
             <th rowSpan={2} style={thS(TB.burgundy)}>Updated</th>
             <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
-          </tr><tr>{BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}</th>)}</tr></thead>
+            <th colSpan={3} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Exit Readiness</th>
+          </tr><tr>
+            {BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}</th>)}
+            <th style={thS(TB.burgundy)}>Equity{"\n"}Story</th>
+            <th style={thS(TB.burgundy)}>DD{"\n"}Ready</th>
+            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
+          </tr></thead>
           <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";const lbS=c.lastBoard==="TBD"?{fontSize:10.5,fontWeight:600,color:"#8A5A12"}:{fontSize:10.5,fontWeight:500,color:TB.darkGray};return<tr key={c.id} style={{background:z}}>
             <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
             <td style={tdS}><span style={lbS}>{c.lastBoard||""}</span></td>
             <td style={tdS}><span style={{fontSize:10.5,color:TB.darkGray}}>{c.bbDate||c.bpDate||""}</span></td>
             {c.bb.map((v,i)=><td key={i} style={{...tdS,padding:"6px 4px"}}><HML v={v}/></td>)}
+            <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.equity}/></td>
+            <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.ddReady}/></td>
+            <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><Comms v={c.comms}/></td>
           </tr>;})}
           </tbody>
         </table></div>
