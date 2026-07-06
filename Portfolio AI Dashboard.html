@@ -67,10 +67,11 @@
           bbDate: excelDate(c[17]), bb: [c[18],c[19],c[20],c[21]].map(v=>v||null),
           spend: c[22]||null, roi: c[23]||null, equity: c[24]||null,
           ddReady: c[25]||null, comms: c[26]||null, vcDate: excelDate(c[27]),
-          rRev: c[28]||null, rCost: c[29]||null,
-          tRev: c[30]||null, tRevD: c[31]||null,
-          tCost: c[32]||null, tCostD: c[33]||null,
-          inv: c[34]||null, note: c[35]||null
+          rev2025: c[28]||null,
+          rRev: c[29]||null, rCost: c[30]||null,
+          tRev: c[31]||null, tRevD: c[32]||null,
+          tCost: c[33]||null, tCostD: c[34]||null,
+          inv: c[35]||null, note: c[36]||null
         };
       }).filter(Boolean);
     };
@@ -96,7 +97,7 @@
     const pctOf=s=>Math.round(s/21*100);
     const hasBP=c=>c.bp.some(Boolean);
     const hasEQ=c=>c.bb.some(Boolean)||c.ddReady||c.equity||(c.comms&&c.comms!=="Not concerned");
-    const hasVC=c=>[c.rRev,c.rCost,c.tRev,c.tCost,c.inv,c.note,c.spend,c.roi].some(Boolean);
+    const hasVC=c=>[c.rRev,c.rCost,c.tRev,c.tCost,c.inv,c.note,c.spend,c.roi,c.rev2025].some(Boolean);
     const tracked=c=>hasBP(c)||hasEQ(c)||hasVC(c);
 
     function Pill({v}){if(!v||!ST[v])return null;const s=ST[v];return<span style={{fontSize:9.5,fontWeight:600,padding:"3px 7px",borderRadius:4,whiteSpace:"nowrap",display:"inline-block",background:s.bg,color:s.c,border:`1px solid ${s.bd}`}}>{s.label}</span>;}
@@ -177,8 +178,8 @@
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Blueprint status</span>
           {ST_OPTS.map(k=>{const s=ST[k];const cnt=t.filter(c=>c.bp.some(v=>v===k)).length;if(cnt===0)return null;return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({cnt})</span></span>;})}
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:1099,borderCollapse:"collapse",tableLayout:"fixed"}}>
-          <colgroup><col style={{width:195}}/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/><col style={{width:68}}/></colgroup>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
+          <colgroup><col/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/><col style={{width:68}}/></colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
             <th rowSpan={2} style={thS(TB.navy)}>Last Board{"\n"}Presentation</th>
@@ -245,8 +246,8 @@
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
         </div>
-        <div style={{overflowX:"auto"}}><table style={{width:1525,borderCollapse:"collapse",tableLayout:"fixed"}}>
-          <colgroup><col style={{width:195}}/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:150}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
+        <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:1200,borderCollapse:"collapse",tableLayout:"fixed"}}>
+          <colgroup><col/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:150}}/><col style={{width:72}}/><col style={{width:88}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
           <thead><tr>
             <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
             <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th>
@@ -255,6 +256,7 @@
             <th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th>
             <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
             <th style={thS(TB.navy)}>Updated</th>
+            <th style={thS(TB.navy)}>2025{"\n"}Revenue</th>
             <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th>
             <th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
             <th style={thS(TB.navy)}>Target{"\n"}Revenue</th>
@@ -272,6 +274,7 @@
             <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.ddReady}/></td>
             <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><Comms v={c.comms}/></td>
             <td style={tdS}><span style={{fontSize:10,color:TB.darkGray}}>{c.vcDate||""}</span></td>
+            <td style={tdS}><Money v={c.rev2025} col={TB.navy}/></td>
             <td style={tdS}><Money v={c.rRev} col={GREEN.c}/></td>
             <td style={tdS}><Money v={c.rCost} col={GREEN.c}/></td>
             <td style={tdS}><Money v={c.tRev} col={TB.navy}/></td>
