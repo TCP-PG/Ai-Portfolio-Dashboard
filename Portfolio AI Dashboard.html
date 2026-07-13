@@ -245,7 +245,7 @@
             <th colSpan={7} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Blueprint</th>
             <th rowSpan={2} style={thS(TB.navy)}>Blueprint{"\n"}Score (/21)</th>
             <th rowSpan={2} style={thS(TB.navy)}>Blueprint{"\n"}%</th>
-          </tr><tr>{CRIT.map((c,i)=><th key={i} style={thS(TB.navy)}>{c[0]}{"\n"}{c[1]}<ColFilterBtn colKey={`bp${i}`} {...cf}/></th>)}</tr></thead>
+          </tr><tr>{CRIT.map((c,i)=><th key={i} style={thS(TB.navy)}>{c[0]}{"\n"}{c[1]}<ColFilterBtn colKey={"bp"+i} {...cf}/></th>)}</tr></thead>
           <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";const lbS=c.lastBoard==="TBD"?{fontSize:10.5,fontWeight:600,color:"#8A5A12"}:{fontSize:10.5,fontWeight:500,color:TB.darkGray};return<tr key={c.id} style={{background:z}}>
             <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
             <td style={tdS}><span style={lbS}>{c.lastBoard||""}</span></td>
@@ -278,7 +278,7 @@
             <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
             <th colSpan={3} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Exit Readiness</th>
           </tr><tr>
-            {BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}<ColFilterBtn colKey={`bb${i}`} {...cf}/></th>)}
+            {BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}<ColFilterBtn colKey={"bb"+i} {...cf}/></th>)}
             <th style={thS(TB.burgundy)}>Equity{"\n"}Story<ColFilterBtn colKey="equity" {...cf}/></th>
             <th style={thS(TB.burgundy)}>DD{"\n"}Ready<ColFilterBtn colKey="ddReady" {...cf}/></th>
             <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms<ColFilterBtn colKey="comms" {...cf}/></th>
@@ -462,4 +462,4 @@
             <div style={{background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,overflow:"hidden",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)",marginBottom:18}}>
               {page==="value"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Quantified AI Value Creation</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI economics alongside realized and targeted revenue, cost savings and investment</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasVC).length} companies</span></div><ValueTab rows={filtered} {...cfProps}/></>}
               {page==="blueprint"&&<><div style={cardHead(TB.navy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Blueprint</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>Operating-model readiness across the 7 AI blueprint pillars</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasBP).length} companies</span></div><BlueprintTab rows={filtered} {...cfProps}/></>}
-              {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity 
+              {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity stor
