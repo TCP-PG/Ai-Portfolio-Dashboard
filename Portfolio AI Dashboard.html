@@ -65,7 +65,7 @@ const parseCSV = text => {
       bp: [c[8],c[9],c[10],c[11],c[12],c[13],c[14]].map(v => v||null),
       bp0:c[8]||null, bp1:c[9]||null, bp2:c[10]||null, bp3:c[11]||null,
       bp4:c[12]||null, bp5:c[13]||null, bp6:c[14]||null,
-      bpScore: c[15] ? parseInt(c[15]) : null, bpPct: c[16]||null,
+      bpScore: c[15] ? parseInt(c[15]) : null, bpPct: c[16] ? Math.round(parseFloat(c[16])*100)+"%" : null,
       bbDate: excelDate(c[17]),
       bb: [c[18],c[19],c[20],c[21]].map(v => v||null),
       bb0:c[18]||null, bb1:c[19]||null, bb2:c[20]||null, bb3:c[21]||null,
