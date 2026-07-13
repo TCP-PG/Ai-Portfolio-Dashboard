@@ -19,7 +19,7 @@
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useRef } = React;
 
     const PA_URL = "https://default22bdc63c37444c46b50d7437110db0.d5.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a73dd05e3cd445dda74e2f9f6f1d0112/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=doTs9hpgHB3zQP4ba4XuIqPNVCnc1I_X0rk14D-7JZ4";
 
@@ -76,7 +76,6 @@
       }).filter(Boolean);
     };
 
-
     const TB={navy:"#00216A",navyDeep:"#001A52",navyInk:"#00123A",burgundy:"#612141",burgundyDeep:"#4A1832",darkGray:"#4C4F54",medGray:"#8A8D90",lightGray:"#C8C9C7",blue1:"#667AA6",blue2:"#99A6C3",blue3:"#CCD3E1"};
     const GREEN={c:"#15643F",bg:"#E2F1EA",bd:"#B4D8C5"};
     const AMBER={c:"#8A5A12",bg:"#FBF0DA",bd:"#ECCF94"};
@@ -124,8 +123,53 @@
       if(!parts.length)return null;
       return <span style={{display:"inline-flex",gap:2}}>{parts.map(p=><SingleAIBadge key={p} g={p}/>)}</span>;
     }
-
     function NameCell({c}){return<div style={{display:"flex",flexDirection:"column",gap:3,textAlign:"left"}}><span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span><span style={{display:"flex",alignItems:"center",gap:5}}><Fund f={c.fund}/><Geo g={c.geo}/><AIGroupBadge g={c.aiGroup}/></span></div>;}
+
+    // ── Excel-style column filter ──
+    const applyColFilters = (rows, colFilters) =>
+      rows.filter(c => Object.entries(colFilters).every(([k, vs]) => !vs || vs.size === 0 || vs.has(c[k])));
+
+    function ColFilterBtn({colKey, allRows, colFilters, setColFilters, openColFilter, setOpenColFilter}) {
+      const isOpen = openColFilter === colKey;
+      const activeVals = colFilters[colKey];
+      const hasFilter = activeVals && activeVals.size > 0;
+      const vals = [...new Set(allRows.map(c => c[colKey]).filter(v => v !== null && v !== undefined && v !== ''))].sort();
+      const toggle = val => {
+        setColFilters(prev => {
+          const cur = new Set(prev[colKey] || []);
+          if (cur.has(val)) cur.delete(val); else cur.add(val);
+          if (cur.size === 0) { const n={...prev}; delete n[colKey]; return n; }
+          return {...prev, [colKey]: cur};
+        });
+      };
+      const clear = e => { e.stopPropagation(); setColFilters(prev=>{ const n={...prev}; delete n[colKey]; return n; }); setOpenColFilter(null); };
+      if (!vals.length) return null;
+      return (
+        <span style={{position:"relative",display:"inline-block",marginLeft:3}}>
+          <button onClick={e=>{e.stopPropagation();setOpenColFilter(isOpen?null:colKey);}}
+            style={{background:"none",border:"none",cursor:"pointer",color:hasFilter?"#FFD700":"rgba(255,255,255,.45)",fontSize:8,padding:"0 1px",lineHeight:1,verticalAlign:"middle"}}
+            title="Filter">▼</button>
+          {isOpen && <>
+            <div onClick={()=>setOpenColFilter(null)} style={{position:"fixed",inset:0,zIndex:1000}}/>
+            <div style={{position:"absolute",top:"calc(100% + 4px)",left:"50%",transform:"translateX(-50%)",background:"#fff",border:"1px solid #E4E5E9",borderRadius:8,boxShadow:"0 4px 20px rgba(0,33,106,.18)",zIndex:1001,minWidth:180,maxHeight:260,display:"flex",flexDirection:"column"}}>
+              <div style={{padding:"7px 12px 6px",borderBottom:"1px solid #EEEFF2",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+                <span style={{fontSize:10,fontWeight:700,color:TB.navy,letterSpacing:".04em"}}>FILTER</span>
+                {hasFilter && <button onClick={clear} style={{fontSize:10,color:TB.burgundy,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Clear</button>}
+              </div>
+              <div style={{overflowY:"auto",padding:"4px 0"}}>
+                {vals.map(v => {
+                  const checked = !hasFilter || activeVals.has(v);
+                  return <label key={v} style={{display:"flex",alignItems:"center",gap:8,padding:"5px 12px",cursor:"pointer",fontSize:11,color:TB.darkGray,background:hasFilter&&activeVals.has(v)?"#EEF2FF":"transparent"}}>
+                    <input type="checkbox" checked={checked} onChange={()=>toggle(v)} style={{cursor:"pointer",accentColor:TB.navy}}/>
+                    <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{v}</span>
+                  </label>;
+                })}
+              </div>
+            </div>
+          </>}
+        </span>
+      );
+    }
 
     function DonutSVG({g,a,r}){const n=g+a+r||1,C=2*Math.PI*40;const seg=(v,off)=>`stroke-dasharray="${C*v/n} ${C-C*v/n}" stroke-dashoffset="${off}"`;const gO=C*.25,aO=C*.25-C*g/n,rO=C*.25-C*(g+a)/n;return<svg width="84" height="84" viewBox="0 0 90 90" dangerouslySetInnerHTML={{__html:`<circle cx="45" cy="45" r="40" fill="none" stroke="#ECEDF0" stroke-width="8"/>${g>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${GREEN.c}" stroke-width="8" ${seg(g,gO)}/>`:""}${a>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${AMBER.c}" stroke-width="8" ${seg(a,aO)}/>`:""}${r>0?`<circle cx="45" cy="45" r="40" fill="none" stroke="${RED.c}" stroke-width="8" ${seg(r,rO)}/>`:""}  <text x="45" y="48" text-anchor="middle" font-size="21" font-weight="700" fill="${TB.navy}" font-family="system-ui,sans-serif">${n}</text><text x="45" y="60" text-anchor="middle" font-size="7.5" fill="${TB.medGray}" font-family="system-ui,sans-serif" letter-spacing=".08em">SCORED</text>`}}/>;}
     function MixBar({parts}){const tot=parts.reduce((a,p)=>a+p.v,0)||1;return<div><div style={{display:"flex",height:9,borderRadius:5,overflow:"hidden",background:"#ECEDF0"}}>{parts.filter(p=>p.v>0).map(p=><div key={p.label} title={`${p.label}: ${p.v}`} style={{width:`${p.v/tot*100}%`,background:p.c}}/>)}</div><div style={{display:"flex",flexWrap:"wrap",gap:"4px 14px",marginTop:9}}>{parts.map(p=><span key={p.label} style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:TB.darkGray}}><span style={{width:8,height:8,borderRadius:2,display:"inline-block",background:p.c}}/>{p.label} <b style={{color:TB.navy}}>{p.v}</b></span>)}</div></div>;}
@@ -170,19 +214,21 @@
     const thS=(bg)=>({fontSize:9,color:"#fff",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",padding:"9px 8px",textAlign:"center",verticalAlign:"middle",whiteSpace:"pre-line",lineHeight:1.35,height:44,background:bg});
     const tdS={fontSize:11,fontWeight:500,padding:"9px 8px",borderTop:"1px solid #EEEFF2",color:TB.darkGray,textAlign:"center",verticalAlign:"middle"};
 
-    function BlueprintTab({rows}){
-      const t=[...rows].sort((a,b)=>a.name.localeCompare(b.name));
-      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+    function BlueprintTab({rows, colFilters, setColFilters, openColFilter, setOpenColFilter}){
+      const cf={allRows:rows,colFilters,setColFilters,openColFilter,setOpenColFilter};
+      const t=[...applyColFilters(rows,colFilters)].sort((a,b)=>a.name.localeCompare(b.name));
+      if(!rows.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Blueprint status</span>
           {ST_OPTS.map(k=>{const s=ST[k];const cnt=t.filter(c=>c.bp.some(v=>v===k)).length;if(cnt===0)return null;return<span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><span style={{width:9,height:9,borderRadius:2,background:s.bg,border:`1.5px solid ${s.c}`,display:"inline-block"}}/>{k} <span style={{color:TB.medGray}}>({cnt})</span></span>;})}
+          {Object.keys(colFilters).length>0&&<button onClick={()=>setColFilters({})} style={{marginLeft:"auto",fontSize:10,color:TB.burgundy,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>✕ Clear all filters</button>}
         </div>
         <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col/><col style={{width:96}}/><col style={{width:74}}/>{CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}<col style={{width:106}}/><col style={{width:68}}/></colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
-            <th rowSpan={2} style={thS(TB.navy)}>Last Board{"\n"}Presentation</th>
+            <th rowSpan={2} style={thS(TB.navy)}>Last Board{"\n"}Presentation<ColFilterBtn colKey="lastBoard" {...cf}/></th>
             <th rowSpan={2} style={thS(TB.navy)}>Updated</th>
             <th colSpan={7} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Blueprint</th>
             <th rowSpan={2} style={thS(TB.navy)}>Blueprint{"\n"}Score (/21)</th>
@@ -201,27 +247,29 @@
       </div>;
     }
 
-    function BlocksTab({rows}){
-      const t=[...rows].sort((a,b)=>a.name.localeCompare(b.name));
-      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+    function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFilter}){
+      const cf={allRows:rows,colFilters,setColFilters,openColFilter,setOpenColFilter};
+      const t=[...applyColFilters(rows,colFilters)].sort((a,b)=>a.name.localeCompare(b.name));
+      if(!rows.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
           <span style={{fontSize:9.5,fontWeight:700,color:TB.medGray,textTransform:"uppercase",letterSpacing:".1em"}}>Readiness</span>
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
+          {Object.keys(colFilters).length>0&&<button onClick={()=>setColFilters({})} style={{marginLeft:"auto",fontSize:10,color:TB.burgundy,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>✕ Clear all filters</button>}
         </div>
         <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col/><col style={{width:96}}/><col style={{width:74}}/>{BB_COLS.map((_,i)=><col key={i} style={{width:84}}/>)}<col style={{width:72}}/><col style={{width:72}}/><col style={{width:150}}/></colgroup>
           <thead><tr>
             <th rowSpan={2} style={{...thS(TB.burgundy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
-            <th rowSpan={2} style={thS(TB.burgundy)}>Last Board{"\n"}Presentation</th>
+            <th rowSpan={2} style={thS(TB.burgundy)}>Last Board{"\n"}Presentation<ColFilterBtn colKey="lastBoard" {...cf}/></th>
             <th rowSpan={2} style={thS(TB.burgundy)}>Updated</th>
             <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
             <th colSpan={3} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Exit Readiness</th>
           </tr><tr>
             {BB_COLS.map((c,i)=><th key={i} style={thS(TB.burgundy)}>{c[0]}{"\n"}{c[1]}</th>)}
-            <th style={thS(TB.burgundy)}>Equity{"\n"}Story</th>
-            <th style={thS(TB.burgundy)}>DD{"\n"}Ready</th>
-            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
+            <th style={thS(TB.burgundy)}>Equity{"\n"}Story<ColFilterBtn colKey="equity" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>DD{"\n"}Ready<ColFilterBtn colKey="ddReady" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms<ColFilterBtn colKey="comms" {...cf}/></th>
           </tr></thead>
           <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";const lbS=c.lastBoard==="TBD"?{fontSize:10.5,fontWeight:600,color:"#8A5A12"}:{fontSize:10.5,fontWeight:500,color:TB.darkGray};return<tr key={c.id} style={{background:z}}>
             <td style={{...tdS,textAlign:"left",position:"sticky",left:0,background:z,boxShadow:"1px 0 0 #ECEDF0"}}><NameCell c={c}/></td>
@@ -237,33 +285,35 @@
       </div>;
     }
 
-    function ValueTab({rows}){
-      const t=[...rows].sort((a,b)=>a.name.localeCompare(b.name));
-      if(!t.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
+    function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFilter}){
+      const cf={allRows:rows,colFilters,setColFilters,openColFilter,setOpenColFilter};
+      const t=[...applyColFilters(rows,colFilters)].sort((a,b)=>a.name.localeCompare(b.name));
+      if(!rows.length)return<div style={{padding:40,textAlign:"center",color:TB.medGray,fontSize:13}}>No companies match the current filters.</div>;
       return<div>
         <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"8px 16px",padding:"11px 20px 13px",borderBottom:"1px solid #EEEFF2",fontSize:10.5}}>
           {[[GREEN.c,"Realized"],[TB.navy,"Targets"],[TB.burgundy,"Economics"]].map(([col,lbl])=><span key={lbl} style={{display:"flex",alignItems:"center",gap:6}}><span style={{width:9,height:9,borderRadius:2,background:col,display:"inline-block"}}/>{lbl}</span>)}
           {Object.entries(HML_FULL).map(([k,v])=><span key={k} style={{display:"flex",alignItems:"center",gap:6,color:TB.darkGray}}><HML v={k}/> {v}</span>)}
           <span style={{color:TB.medGray}}>· <i>n/d</i> = not disclosed · Figures in source currency</span>
+          {Object.keys(colFilters).length>0&&<button onClick={()=>setColFilters({})} style={{marginLeft:"auto",fontSize:10,color:TB.burgundy,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>✕ Clear all filters</button>}
         </div>
         <div style={{overflowX:"auto"}}><table style={{width:"100%",minWidth:1200,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup><col/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:150}}/><col style={{width:72}}/><col style={{width:88}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/><col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/></colgroup>
           <thead><tr>
             <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
-            <th style={thS(TB.burgundy)}>Total{"\n"}Spend</th>
-            <th style={thS(TB.burgundy)}>ROI</th>
-            <th style={thS(TB.burgundy)}>AI Equity{"\n"}Story</th>
-            <th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness</th>
-            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms</th>
+            <th style={thS(TB.burgundy)}>Total{"\n"}Spend<ColFilterBtn colKey="spend" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>ROI<ColFilterBtn colKey="roi" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>AI Equity{"\n"}Story<ColFilterBtn colKey="equity" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>AI DD{"\n"}Readiness<ColFilterBtn colKey="ddReady" {...cf}/></th>
+            <th style={thS(TB.burgundy)}>AI Market{"\n"}Comms<ColFilterBtn colKey="comms" {...cf}/></th>
             <th style={thS(TB.navy)}>Updated</th>
-            <th style={thS(TB.navy)}>2025{"\n"}Revenue</th>
-            <th style={thS(TB.navy)}>Realized{"\n"}Revenue</th>
-            <th style={thS(TB.navy)}>Realized{"\n"}Cost Savings</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Revenue</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Rev Date</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Cost Savings</th>
-            <th style={thS(TB.navy)}>Target{"\n"}Cost Date</th>
-            <th style={thS(TB.navy)}>AI{"\n"}Investment</th>
+            <th style={thS(TB.navy)}>2025{"\n"}Revenue<ColFilterBtn colKey="rev2025" {...cf}/></th>
+            <th style={thS(TB.navy)}>Realized{"\n"}Revenue<ColFilterBtn colKey="rRev" {...cf}/></th>
+            <th style={thS(TB.navy)}>Realized{"\n"}Cost Savings<ColFilterBtn colKey="rCost" {...cf}/></th>
+            <th style={thS(TB.navy)}>Target{"\n"}Revenue<ColFilterBtn colKey="tRev" {...cf}/></th>
+            <th style={thS(TB.navy)}>Target{"\n"}Rev Date<ColFilterBtn colKey="tRevD" {...cf}/></th>
+            <th style={thS(TB.navy)}>Target{"\n"}Cost Savings<ColFilterBtn colKey="tCost" {...cf}/></th>
+            <th style={thS(TB.navy)}>Target{"\n"}Cost Date<ColFilterBtn colKey="tCostD" {...cf}/></th>
+            <th style={thS(TB.navy)}>AI{"\n"}Investment<ColFilterBtn colKey="inv" {...cf}/></th>
             <th style={{...thS(TB.navy),textAlign:"left"}}>Comment / Note</th>
           </tr></thead>
           <tbody>{t.map((c,ri)=>{const z=ri%2?"#FCFCFD":"#fff";return<tr key={c.id} style={{background:z}}>
@@ -296,7 +346,11 @@
       const [q, setQ] = useState("");
       const [liveData, setLiveData] = useState(()=>{try{const c=localStorage.getItem('tcpAIDash');if(c){const p=JSON.parse(c);if(p&&p.data&&p.data.length>0)return p.data;}}catch(e){}return null;});
       const [lastUpdated, setLastUpdated] = useState(()=>{try{const c=localStorage.getItem('tcpAIDash');if(c){const p=JSON.parse(c);if(p&&p.ts)return new Date(p.ts);}}catch(e){}return null;});
-      const [aiGrp, setAiGrp] = useState("All");
+      // ── multi-select AI group (empty array = All) ──
+      const [selectedAiGrps, setSelectedAiGrps] = useState([]);
+      // ── column filters ──
+      const [colFilters, setColFilters] = useState({});
+      const [openColFilter, setOpenColFilter] = useState(null);
       const [fetching, setFetching] = useState(false);
       const [refreshTick, setRefreshTick] = useState(0);
 
@@ -326,16 +380,26 @@
           else if(fund==="PE"){if(!/PE/.test(c.fund||""))return false;}
           else if(c.fund!==fund)return false;
         }
-        if(aiGrp!=="All"&&!(c.aiGroup||"").split("+").map(x=>x.trim()).includes(aiGrp))return false;
+        // multi-select: pass if no groups selected, or row matches ANY selected group
+        if(selectedAiGrps.length>0){
+          const rowGrps=(c.aiGroup||"").split("+").map(x=>x.trim());
+          if(!selectedAiGrps.some(g=>rowGrps.includes(g)))return false;
+        }
         if(q&&!c.name.toLowerCase().includes(q.toLowerCase()))return false;
         return true;
       });
+
+      const toggleAiGrp = g => {
+        setSelectedAiGrps(prev => prev.includes(g) ? prev.filter(x=>x!==g) : [...prev,g]);
+        setQ("");
+      };
 
       const tabs=[{k:"value",label:"Quantified Value Creation"},{k:"blueprint",label:"AI Blueprint"},{k:"blocks",label:"AI Exit Readiness"}];
       const geos=["All","Europe","US"],funds=["All","PE","TSO","Delta"];
       const nbtn=(active)=>({background:active?"rgba(255,255,255,.16)":"transparent",border:`1px solid ${active?"rgba(255,255,255,.5)":"rgba(255,255,255,.22)"}`,borderRadius:5,padding:"5px 13px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?600:400,fontFamily:"inherit",transition:"all .12s",whiteSpace:"nowrap"});
       const tbtn=(active)=>({background:active?"#fff":"rgba(255,255,255,.1)",border:`1px solid ${active?"#fff":"rgba(255,255,255,.2)"}`,borderRadius:7,padding:"7px 20px",fontSize:12,fontWeight:600,cursor:"pointer",color:active?"#003A8C":"rgba(255,255,255,.65)",fontFamily:"inherit",letterSpacing:".02em",transition:"all .15s"});
       const cardHead=(col)=>({padding:"16px 20px 14px",display:"flex",justifyContent:"space-between",alignItems:"flex-end",borderBottom:"1px solid #EEEFF2",borderLeft:`3px solid ${col}`});
+      const cfProps={colFilters,setColFilters,openColFilter,setOpenColFilter};
 
       return(
         <div style={{fontFamily:"system-ui,-apple-system,'Segoe UI',Arial,sans-serif",background:"#F1F2F5",color:"#4C4F54",minHeight:"100vh"}}>
@@ -358,14 +422,17 @@
                 <div style={{width:1,height:18,background:"rgba(255,255,255,.22)"}}/>
                 <div style={{display:"flex",gap:4,alignItems:"center"}}>
                   <span style={{fontSize:9,fontWeight:700,color:"rgba(255,255,255,.4)",letterSpacing:".1em",marginRight:2}}>AI</span>
-                  {["All","A","B","C"].map(g=>{const s=g!=="All"?AIG[g]:null;const active=aiGrp===g;return<button key={g} style={{background:active?(s?s.bd:"rgba(255,255,255,.16)"):"transparent",border:"1px solid "+(active?(s?s.bd:"rgba(255,255,255,.5)"):"rgba(255,255,255,.22)"),borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"}} onClick={()=>{setAiGrp(g);setQ("");}}>{g}</button>;})}
+                  {/* All clears selection */}
+                  <button style={nbtn(selectedAiGrps.length===0)} onClick={()=>{setSelectedAiGrps([]);setQ("");}}>All</button>
+                  {/* A/B/C toggle independently */}
+                  {["A","B","C"].map(g=>{const s=AIG[g];const active=selectedAiGrps.includes(g);return<button key={g} style={{background:active?s.bd:"transparent",border:"1px solid "+(active?s.bd:"rgba(255,255,255,.22)"),borderRadius:5,padding:"5px 11px",fontSize:11,cursor:"pointer",color:active?"#fff":"rgba(255,255,255,.62)",fontWeight:active?700:400,fontFamily:"inherit",transition:"all .12s"}} onClick={()=>toggleAiGrp(g)}>{g}</button>;})}
                 </div>
               </div>
             </div>
           </div>
           <div style={{background:"#003A8C",borderTop:"1px solid rgba(255,255,255,.15)"}}>
             <div style={{padding:"0 22px",display:"flex",alignItems:"center",gap:6,maxWidth:1680,margin:"0 auto",height:46}}>
-              {tabs.map(t=><button key={t.k} style={tbtn(page===t.k)} onClick={()=>{setPage(t.k);setQ("");}}>{t.label}</button>)}
+              {tabs.map(t=><button key={t.k} style={tbtn(page===t.k)} onClick={()=>{setPage(t.k);setQ("");setColFilters({});setOpenColFilter(null);}}>{t.label}</button>)}
             </div>
           </div>
           <div style={{padding:"22px 28px 44px",maxWidth:1680,margin:"0 auto"}}>
@@ -381,9 +448,9 @@
               {q&&<span style={{fontSize:11.5,color:TB.medGray}}>{filtered.length} matches</span>}
             </div>
             <div style={{background:"#fff",border:"1px solid #E4E5E9",borderRadius:10,overflow:"hidden",boxShadow:"0 1px 2px rgba(0,33,106,.04),0 6px 20px rgba(0,33,106,.045)",marginBottom:18}}>
-              {page==="value"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Quantified AI Value Creation</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI economics alongside realized and targeted revenue, cost savings and investment</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasVC).length} companies</span></div><ValueTab rows={filtered}/></>}
-              {page==="blueprint"&&<><div style={cardHead(TB.navy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Blueprint</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>Operating-model readiness across the 7 AI blueprint pillars</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasBP).length} companies</span></div><BlueprintTab rows={filtered}/></>}
-              {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span></div><BlocksTab rows={filtered}/></>}
+              {page==="value"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Quantified AI Value Creation</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI economics alongside realized and targeted revenue, cost savings and investment</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasVC).length} companies</span></div><ValueTab rows={filtered} {...cfProps}/></>}
+              {page==="blueprint"&&<><div style={cardHead(TB.navy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Blueprint</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>Operating-model readiness across the 7 AI blueprint pillars</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(hasBP).length} companies</span></div><BlueprintTab rows={filtered} {...cfProps}/></>}
+              {page==="blocks"&&<><div style={cardHead(TB.burgundy)}><div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div><span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span></div><BlocksTab rows={filtered} {...cfProps}/></>}
             </div>
             <div style={{marginTop:16,fontSize:10.5,color:TB.medGray,textAlign:"center"}}>
               {"TowerBrook Capital Partners · Portfolio AI Dashboard"}
