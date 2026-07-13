@@ -309,8 +309,8 @@ function BlueprintTab({rows, colFilters, setColFilters, openColFilter, setOpenCo
               <th rowSpan={2} style={thS(TB.navy)}>{"Last Board\nPresentation"}<ColFilterBtn colKey="lastBoard" {...cf}/></th>
               <th rowSpan={2} style={thS(TB.navy)}>Updated<ColFilterBtn colKey="bpDate" {...cf}/></th>
               <th colSpan={7} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Blueprint</th>
-              <th rowSpan={2} style={thS(TB.navy)}>{"Blueprint\nScore (/21)"}<ColFilterBtn colKey="bpScore" {...cf}/></th>
-              <th rowSpan={2} style={thS(TB.navy)}>{"Blueprint\n%"}<ColFilterBtn colKey="bpPct" {...cf}/></th>
+              <th rowSpan={2} style={thS(TB.navy)}>{"Blueprint\nScore (/21)"}<ColFilterBtn colKey="bpScoreDisplay" {...cf}/></th>
+              <th rowSpan={2} style={thS(TB.navy)}>{"Blueprint\n%"}<ColFilterBtn colKey="bpPctDisplay" {...cf}/></th>
             </tr>
             <tr>
               {CRIT.map((col,i)=>(
@@ -514,7 +514,11 @@ function Dashboard() {
     load();
   },[refreshTick]);
 
-  const activeData = liveData || [];
+  const activeData = (liveData || []).map(c => ({
+    ...c,
+    bpScoreDisplay: hasBP(c) ? rowScore(c) : null,
+    bpPctDisplay: hasBP(c) ? pctOf(rowScore(c))+"%" : null
+  }));
   const filtered = activeData.filter(c => {
     if(geo!=="All" && c.geo!==geo) return false;
     if(fund!=="All"){
