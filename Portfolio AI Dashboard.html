@@ -414,7 +414,8 @@ function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFi
               <th rowSpan={2} style={thS(TB.burgundy)}>{"Last Board\nPresentation"}<ColFilterBtn colKey="lastBoard" {...cf}/></th>
               <th rowSpan={2} style={thS(TB.burgundy)}>Updated<ColFilterBtn colKey="bbDate" {...cf}/></th>
               <th colSpan={5} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks<em style={{display:"block",fontStyle:"italic",fontSize:8,letterSpacing:".04em",opacity:.8,textTransform:"none",marginTop:2}}>Equity Story</em></th>
-              <th colSpan={2} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Exit Readiness</th>
+              <th rowSpan={2} style={thS(TB.burgundy)}>{"Equity\nStory"}<ColFilterBtn colKey="equity" {...cf}/></th>
+              <th rowSpan={2} style={thS(TB.burgundy)}>{"DD\nReady"}<ColFilterBtn colKey="ddReady" {...cf}/></th>
             </tr>
             <tr>
               {BB_COLS.map((col,i)=>(
@@ -424,8 +425,6 @@ function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFi
                 </th>
               ))}
               <th style={thS(TB.burgundy)}>{"AI Market\nComms"}<ColFilterBtn colKey="comms" {...cf}/></th>
-              <th style={thS(TB.burgundy)}>{"Equity\nStory"}<ColFilterBtn colKey="equity" {...cf}/></th>
-              <th style={thS(TB.burgundy)}>{"DD\nReady"}<ColFilterBtn colKey="ddReady" {...cf}/></th>
             </tr>
           </thead>
           <tbody>
