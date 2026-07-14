@@ -345,9 +345,9 @@ function BlueprintTab({rows, colFilters, setColFilters, openColFilter, setOpenCo
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup>
-            <col/><col style={{width:96}}/><col style={{width:74}}/>
+            <col style={{width:200}}/><col style={{width:96}}/><col style={{width:74}}/>
             {CRIT.map((_,i)=><col key={i} style={{width:80}}/>)}
-            <col style={{width:106}}/><col style={{width:68}}/>
+            <col style={{width:106}}/><col/>
           </colgroup>
           <thead>
             <tr>
@@ -403,9 +403,9 @@ function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFi
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",minWidth:900,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup>
-            <col/><col style={{width:96}}/><col style={{width:74}}/>
+            <col style={{width:200}}/><col style={{width:96}}/><col style={{width:74}}/>
             {BB_COLS.map((_,i)=><col key={i} style={{width:84}}/>)}
-            <col style={{width:72}}/><col style={{width:72}}/><col style={{width:150}}/>
+            <col style={{width:72}}/><col style={{width:80}}/><col/>
           </colgroup>
           <thead>
             <tr>
@@ -465,10 +465,10 @@ function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFil
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",minWidth:1100,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup>
-            <col style={{width:"16%"}}/><col style={{width:80}}/><col style={{width:62}}/>
-            <col style={{width:78}}/><col style={{width:88}}/>
-            <col style={{width:68}}/><col style={{width:84}}/><col style={{width:90}}/><col style={{width:100}}/>
-            <col style={{width:88}}/><col style={{width:82}}/><col style={{width:100}}/><col style={{width:82}}/><col style={{width:82}}/>
+            <col style={{width:200}}/><col style={{width:78}}/><col style={{width:60}}/>
+            <col style={{width:76}}/><col style={{width:86}}/>
+            <col style={{width:68}}/><col style={{width:82}}/><col style={{width:88}}/><col style={{width:98}}/>
+            <col style={{width:86}}/><col style={{width:80}}/><col style={{width:98}}/><col style={{width:80}}/><col style={{width:80}}/>
             <col/>
           </colgroup>
           <thead>
