@@ -463,20 +463,15 @@ function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFil
         {Object.keys(colFilters).length>0 && <button onClick={()=>setColFilters({})} style={{marginLeft:"auto",fontSize:10,color:TB.burgundy,background:"none",border:"none",cursor:"pointer",fontFamily:"inherit",fontWeight:600}}>Clear all filters</button>}
       </div>
       <div style={{overflowX:"auto"}}>
-        <table style={{width:"100%",minWidth:1200,borderCollapse:"collapse",tableLayout:"fixed"}}>
-          <colgroup>
-            <col/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/>
-            <col style={{width:72}}/><col style={{width:88}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/>
-            <col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/>
-          </colgroup>
+        <table style={{width:"100%",borderCollapse:"collapse"}}>
           <thead>
             <tr>
-              <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3}}>Company</th>
+              <th style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,minWidth:180}}>Company</th>
               <th style={thS(TB.burgundy)}>{"Total\nSpend"}<ColFilterBtn colKey="spend" {...cf}/></th>
               <th style={thS(TB.burgundy)}>ROI<ColFilterBtn colKey="roi" {...cf}/></th>
-              <th style={thS(TB.burgundy)}>{"AI Equity\nStory"}<ColFilterBtn colKey="equity" {...cf}/></th>
-              <th style={thS(TB.burgundy)}>{"AI DD\nReadiness"}<ColFilterBtn colKey="ddReady" {...cf}/></th>
-              <th style={thS(TB.navy)}>Updated<ColFilterBtn colKey="vcDate" {...cf}/></th>
+              <th style={{...thS(TB.burgundy),minWidth:80}}>{"AI Equity\nStory"}<ColFilterBtn colKey="equity" {...cf}/></th>
+              <th style={{...thS(TB.burgundy),minWidth:90}}>{"AI DD\nReadiness"}<ColFilterBtn colKey="ddReady" {...cf}/></th>
+              <th style={{...thS(TB.navy),minWidth:72}}>Updated<ColFilterBtn colKey="vcDate" {...cf}/></th>
               <th style={thS(TB.navy)}>{"2025\nRevenue"}<ColFilterBtn colKey="rev2025" {...cf}/></th>
               <th style={thS(TB.navy)}>{"Realized\nRevenue"}<ColFilterBtn colKey="rRev" {...cf}/></th>
               <th style={thS(TB.navy)}>{"Realized\nCost Savings"}<ColFilterBtn colKey="rCost" {...cf}/></th>
