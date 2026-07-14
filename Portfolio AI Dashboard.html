@@ -230,7 +230,7 @@ function ColFilterBtn({colKey, allRows, colFilters, setColFilters, openColFilter
 
   if(!vals.length) return null;
   return (
-    <span style={{position:"relative",display:"block",textAlign:"center",marginTop:2}}>
+    <span style={{position:"relative",display:"inline-block",marginLeft:3}}>
       <button ref={btnRef} onClick={handleOpen} title="Filter"
         style={{background:"none",border:"none",cursor:"pointer",color:hasFilter?"#FFD700":"rgba(255,255,255,.45)",fontSize:8,padding:"0 1px",lineHeight:1,verticalAlign:"middle"}}>
         {"▼"}
@@ -465,7 +465,7 @@ function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFil
       <div style={{overflowX:"auto"}}>
         <table style={{width:"100%",minWidth:1200,borderCollapse:"collapse",tableLayout:"fixed"}}>
           <colgroup>
-            <col/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/><col style={{width:150}}/>
+            <col/><col style={{width:84}}/><col style={{width:68}}/><col style={{width:76}}/><col style={{width:80}}/>
             <col style={{width:72}}/><col style={{width:88}}/><col style={{width:96}}/><col style={{width:96}}/><col style={{width:88}}/>
             <col style={{width:72}}/><col style={{width:96}}/><col style={{width:72}}/><col style={{width:84}}/><col style={{width:196}}/>
           </colgroup>
