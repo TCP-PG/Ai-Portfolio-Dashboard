@@ -328,7 +328,7 @@ function Summary({rows}) {
   );
 }
 
-const thS = bg => ({fontSize:9,color:"#fff",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",padding:"9px 8px",textAlign:"center",verticalAlign:"middle",whiteSpace:"pre-line",lineHeight:1.35,height:44,background:bg});
+const thS = bg => ({fontSize:9,color:"#fff",fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",padding:"9px 8px",textAlign:"center",verticalAlign:"middle",whiteSpace:"pre-line",lineHeight:1.35,height:44,background:bg,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"});
 const tdS = {fontSize:11,fontWeight:500,padding:"9px 8px",borderTop:"1px solid #EEEFF2",color:TB.darkGray,textAlign:"center",verticalAlign:"middle"};
 
 function BlueprintTab({rows, colFilters, setColFilters, openColFilter, setOpenColFilter}) {
@@ -351,7 +351,7 @@ function BlueprintTab({rows, colFilters, setColFilters, openColFilter, setOpenCo
           </colgroup>
           <thead>
             <tr>
-              <th rowSpan={2} style={{...thS(TB.navy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
+              <th rowSpan={2} style={{...thS(TB.navy),alignItems:"flex-start",textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
               <th rowSpan={2} style={thS(TB.navy)}>{"Last Board\nPresentation"}<ColFilterBtn colKey="lastBoard" {...cf}/></th>
               <th rowSpan={2} style={thS(TB.navy)}>Updated<ColFilterBtn colKey="bpDate" {...cf}/></th>
               <th colSpan={7} style={{...thS(TB.navyInk),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>AI Blueprint</th>
@@ -409,7 +409,7 @@ function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFi
           </colgroup>
           <thead>
             <tr>
-              <th rowSpan={2} style={{...thS(TB.burgundy),textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
+              <th rowSpan={2} style={{...thS(TB.burgundy),alignItems:"flex-start",textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
               <th rowSpan={2} style={thS(TB.burgundy)}>{"Last Board\nPresentation"}<ColFilterBtn colKey="lastBoard" {...cf}/></th>
               <th rowSpan={2} style={thS(TB.burgundy)}>Updated<ColFilterBtn colKey="bbDate" {...cf}/></th>
               <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
