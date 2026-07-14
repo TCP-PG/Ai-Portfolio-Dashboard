@@ -142,10 +142,53 @@ function AIGroupBadge({g}) {
   return <span style={{display:"inline-flex",gap:2}}>{parts.map(p=><SingleAIBadge key={p} g={p}/>)}</span>;
 }
 
+const LOGOS = {
+  "AA":"theaa.com","Acacium Group":"acaciumgroup.com","Aernnova":"aernnova.com",
+  "Amylu":"amylu.com","Anthropic":"anthropic.com","AQUAchiara":"acquachiara.it",
+  "Axil":"axil.com","Azzurri":"azzurri.co.uk","BRG":"thinkbrg.com",
+  "Bruneau":"bruneau.fr","CAVU":"cavuconsumer.com","CBTS":"cbts.com",
+  "CoAction":"coactionpet.com","Compassus":"compassus.com","Demakes":"demakes.com",
+  "ECIT":"ecit.com","EFESO":"efeso.com","EisnerAmper":"eisneramper.com",
+  "Envevo":"envevo.com","Epsa":"epsa.eu","Equals":"equals.com",
+  "FreshPure":"freshpure.com","FUZE HEALTH":"fuzehealth.com","GMC":"gmc-biz.com",
+  "Gravity Media Group":"gravitymedia.com","GSF":"gsfcarparts.com",
+  "ID Unlimited":"idunlimited.com","IDAK":"idak.com","Ignite Fitness":"ignitefitness.com",
+  "Infopro Digital":"infoprodigital.com","IZIPIZI":"izipizi.com","J. Jill":"jjill.com",
+  "JJA":"jja.fr","JSM":"jsm.com","La Maison Bleue":"lamaisonbleue.fr",
+  "Langan":"langan.com","Law Finance Group":"lawfinancegroup.com","LiftWerx":"liftwerx.com",
+  "MSA Mizar":"msamizar.com","Newtek":"newtekone.com","Pennant Park":"pennantpark.com",
+  "Precede":"precede.com","Premium Credit":"premiumcredit.com","PT Solutions":"ptsolutionspt.com",
+  "R1 RCM":"r1rcm.com","Regent Surgical":"regentsurgicalhealth.com",
+  "Rewards Network":"rewardsnetwork.com","RYDGE":"rydge.com",
+  "Sabena Technics":"sabena-technics.com","Solis":"solismammography.com",
+  "Stonebridge":"stonebridgecos.com","Talan":"talan.com","Team Eiffel":"team-eiffel.com",
+  "The Independents":"theindependents.eu","TriMedX":"trimedx.com","TXO":"txo.com",
+  "Uperio":"uperio.com","USACS":"usacs.com","Validity":"validity.com",
+  "Vatica + Cozeva":"vaticahealth.com","VytlOne (formerly Maxor)":"vytlone.com"
+};
+
+function CompanyLogo({name}) {
+  const domain = LOGOS[name];
+  if (!domain) return null;
+  return (
+    <img
+      src={"https://logo.clearbit.com/"+domain}
+      alt={name}
+      height="18"
+      width="18"
+      style={{borderRadius:3,objectFit:"contain",flexShrink:0,background:"#fff",border:"1px solid #E4E5E9",padding:1}}
+      onError={e=>{e.target.style.display="none";}}
+    />
+  );
+}
+
 function NameCell({c}) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:3,textAlign:"left"}}>
-      <span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span>
+      <div style={{display:"flex",alignItems:"center",gap:6}}>
+        <CompanyLogo name={c.name}/>
+        <span style={{fontWeight:700,color:TB.navy,fontSize:11.5,lineHeight:1.15}}>{c.name}</span>
+      </div>
       <span style={{display:"flex",alignItems:"center",gap:5}}><Fund f={c.fund}/><Geo g={c.geo}/><AIGroupBadge g={c.aiGroup}/></span>
     </div>
   );
