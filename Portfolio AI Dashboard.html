@@ -412,7 +412,7 @@ function BlocksTab({rows, colFilters, setColFilters, openColFilter, setOpenColFi
               <th rowSpan={2} style={{...thS(TB.burgundy),alignItems:"flex-start",textAlign:"left",position:"sticky",left:0,zIndex:3,boxShadow:"1px 0 0 rgba(255,255,255,.12)"}}>Company</th>
               <th rowSpan={2} style={thS(TB.burgundy)}>{"Last Board\nPresentation"}<ColFilterBtn colKey="lastBoard" {...cf}/></th>
               <th rowSpan={2} style={thS(TB.burgundy)}>Updated<ColFilterBtn colKey="bbDate" {...cf}/></th>
-              <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks</th>
+              <th colSpan={4} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Building Blocks<em style={{display:"block",fontStyle:"italic",fontSize:8,letterSpacing:".04em",opacity:.8,textTransform:"none",marginTop:2}}>Equity Story</em></th>
               <th colSpan={3} style={{...thS(TB.burgundyDeep),height:"auto",letterSpacing:".14em",borderBottom:"1px solid rgba(255,255,255,.14)"}}>Exit Readiness</th>
             </tr>
             <tr>
@@ -476,7 +476,6 @@ function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFil
               <th style={thS(TB.burgundy)}>ROI<ColFilterBtn colKey="roi" {...cf}/></th>
               <th style={thS(TB.burgundy)}>{"AI Equity\nStory"}<ColFilterBtn colKey="equity" {...cf}/></th>
               <th style={thS(TB.burgundy)}>{"AI DD\nReadiness"}<ColFilterBtn colKey="ddReady" {...cf}/></th>
-              <th style={thS(TB.burgundy)}>{"AI Market\nComms"}<ColFilterBtn colKey="comms" {...cf}/></th>
               <th style={thS(TB.navy)}>Updated<ColFilterBtn colKey="vcDate" {...cf}/></th>
               <th style={thS(TB.navy)}>{"2025\nRevenue"}<ColFilterBtn colKey="rev2025" {...cf}/></th>
               <th style={thS(TB.navy)}>{"Realized\nRevenue"}<ColFilterBtn colKey="rRev" {...cf}/></th>
@@ -499,7 +498,6 @@ function ValueTab({rows, colFilters, setColFilters, openColFilter, setOpenColFil
                   <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.roi}/></td>
                   <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.equity}/></td>
                   <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><HML v={c.ddReady}/></td>
-                  <td style={{...tdS,background:ri%2?"#F9F5F7":"#FBF7F9"}}><Comms v={c.comms}/></td>
                   <td style={tdS}><span style={{fontSize:10,color:TB.darkGray}}>{c.vcDate||""}</span></td>
                   <td style={tdS}><Money v={c.rev2025} col={TB.navy}/></td>
                   <td style={tdS}><Money v={c.rRev} col={GREEN.c}/></td>
@@ -585,7 +583,7 @@ function Dashboard() {
     setQ("");
   };
 
-  const tabs = [{k:"value",label:"Quantified Value Creation"},{k:"blueprint",label:"AI Blueprint"},{k:"blocks",label:"AI Exit Readiness"}];
+  const tabs = [{k:"value",label:"Quantified Value Creation"},{k:"blueprint",label:"AI Blueprint"},{k:"blocks",label:"Equity Story"}];
   const geos = ["All","Europe","US"];
   const funds = ["All","PE","TSO","Delta"];
 
@@ -685,7 +683,7 @@ function Dashboard() {
           {page==="blocks" && (
             <div>
               <div style={cardHead(TB.burgundy)}>
-                <div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>AI Exit Readiness</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div>
+                <div><div style={{fontSize:14,fontWeight:700,color:TB.navy}}>Equity Story</div><div style={{fontSize:11.5,color:TB.medGray,marginTop:3}}>AI equity story building blocks, DD readiness, market comms positioning and equity story readiness</div></div>
                 <span style={{fontSize:11.5,color:TB.medGray,whiteSpace:"nowrap"}}>{filtered.filter(c=>hasEQ(c)||hasBP(c)).length} companies</span>
               </div>
               <BlocksTab rows={filtered} {...cfProps}/>
